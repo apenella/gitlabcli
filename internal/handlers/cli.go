@@ -162,7 +162,7 @@ func (h CliHandler) CloneProjectFromGroup(group string) error {
 	}
 	err := h.service.Clone(filter(group))
 	if err != nil {
-		return errors.New(errContext, fmt.Sprintf("One or more project from group '%s' could not be cloned", group), err)
+		return errors.New(errContext, fmt.Sprintf("One or more projects from group '%s' could not be cloned", group), err)
 	}
 
 	return nil

@@ -10,13 +10,16 @@ import (
 	"github.com/apenella/gitlabcli/cmd/cli/list"
 	listgroup "github.com/apenella/gitlabcli/cmd/cli/list/group"
 	listproject "github.com/apenella/gitlabcli/cmd/cli/list/project"
+	"github.com/apenella/gitlabcli/cmd/cli/version"
 	"github.com/apenella/gitlabcli/cmd/configuration"
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	service "github.com/apenella/gitlabcli/internal/core/services"
 	handler "github.com/apenella/gitlabcli/internal/handlers"
 	gitrepo "github.com/apenella/gitlabcli/internal/repositories/git"
 	gitlabrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab"
+	storagerepo "github.com/apenella/gitlabcli/internal/repositories/storage"
 	"github.com/apenella/gitlabcli/pkg/command"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +31,7 @@ func NewCommand() *command.AppCommand {
 	var getGroupSubcommand,
 		getProjectSubcommand,
 		getSubcommand,
+		versionSubcommand,
 		listGroupsSubcommand,
 		listProjectsSubcommand,
 		listSubcommand,
@@ -35,6 +39,7 @@ func NewCommand() *command.AppCommand {
 	var gitRepo gitrepo.GitRepository
 	var glRepo gitlabrepo.GitlabRepository
 	var glSrv ports.Service
+	var glStorage storagerepo.ProjectStorage
 	var cliHandler handler.CliHandler
 
 	gitlabCmd := &cobra.Command{
@@ -65,10 +70,13 @@ func NewCommand() *command.AppCommand {
 				return err
 			}
 
-			glSrv, err = service.New(glRepo, gitRepo,
+			glStorage = storagerepo.New(afero.NewOsFs())
+
+			glSrv, err = service.New(glRepo, gitRepo, glStorage,
 				service.WithUseNamespacePath(),
 				service.WithBasePath(conf.WorkingDir),
 			)
+
 			if err != nil {
 				return err
 			}
@@ -92,6 +100,7 @@ func NewCommand() *command.AppCommand {
 	getGroupSubcommand = getgroup.NewCommand()
 	getProjectSubcommand = getproject.NewCommand()
 	getSubcommand = get.NewCommand()
+	versionSubcommand = version.NewCommand()
 
 	listGroupsSubcommand = listgroup.NewCommand()
 	listProjectsSubcommand = listproject.NewCommand()
@@ -105,7 +114,7 @@ func NewCommand() *command.AppCommand {
 
 	getSubcommand.AddCommands(getGroupSubcommand, getProjectSubcommand)
 	listSubcommand.AddCommands(listGroupsSubcommand, listProjectsSubcommand)
-	gitlabCommand.AddCommands(getSubcommand, listSubcommand, cloneSubcommand)
+	gitlabCommand.AddCommands(getSubcommand, listSubcommand, cloneSubcommand, versionSubcommand)
 
 	return gitlabCommand
 }

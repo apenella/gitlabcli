@@ -8,9 +8,17 @@ type Service interface {
 }
 
 type GitlabService interface {
+	GitlabProjectService
+	GitlabGroupService
+}
+
+type GitlabProjectService interface {
 	GetProject(project string) ([]domain.Project, error)
 	ListProjects() ([]domain.Project, error)
 	ListProjectsFromGroup(string) ([]domain.Project, error)
+}
+
+type GitlabGroupService interface {
 	GetGroup(group string) ([]domain.Group, error)
 	ListGroups() ([]domain.Group, error)
 }
