@@ -1,68 +1,41 @@
 package configuration
 
-import (
-	"fmt"
-	"os/user"
-	"path/filepath"
-
-	"github.com/go-playground/validator"
-	"github.com/spf13/viper"
-)
-
 const (
-	DefaultConfigFile = "config"
-
 	BaseUrlKey    = "base_url"
 	TokenKey      = "gitlab_token"
 	WorkingDirKey = "working_dir"
 )
 
+type ConfigValidator interface {
+	Struct(s interface{}) error
+}
+
 // Configuration for gitlabcli
 type Configuration struct {
 	// Gitlab server url
-	BaseURL string `mapstructure:"base_url" validate:"required"`
+	BaseURL string `mapstructure:"base_url" validate:"required,url"`
 	// Token to authenticate
 	Token string `mapstructure:"gitlab_token" validate:"required"`
 	// workingDir
-	WorkingDir string `mapstructure:"working_dir,omitempty" validate:"required"`
+	WorkingDir string `mapstructure:"working_dir,omitempty" validate:"required,dir"`
 }
 
-func New(configFile string) (Configuration, error) {
-	var err error
-	var conf Configuration
-
-	user, err := user.Current()
-	if err != nil {
-		return conf, fmt.Errorf("current user information can not be achieved. %s", err.Error())
+func New(base, token, workingDir string) *Configuration {
+	return &Configuration{
+		BaseURL:    base,
+		Token:      token,
+		WorkingDir: workingDir,
 	}
-
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix("gitlabcli")
-	viper.SetConfigName(DefaultConfigFile)
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(filepath.Join(user.HomeDir, ".config", "gitlabcli"))
-
-	if configFile != "" {
-		viper.SetConfigFile(configFile)
-	}
-
-	err = viper.ReadInConfig()
-	if err != nil {
-		_, isConfigFileNotFoundError := err.(viper.ConfigFileNotFoundError)
-		if !isConfigFileNotFoundError {
-			return conf, fmt.Errorf("error reading configuration from '%s'. %s", configFile, err.Error())
-		}
-	}
-
-	err = viper.Unmarshal(&conf)
-	if err != nil {
-		return conf, fmt.Errorf("error unmarshaling configuration. %s", err.Error())
-	}
-
-	return conf, nil
 }
 
-func (c Configuration) Validate() error {
-	validator := validator.New()
+func (c Configuration) ToMap() map[string]interface{} {
+	return map[string]interface{}{
+		BaseUrlKey:    c.BaseURL,
+		TokenKey:      c.Token,
+		WorkingDirKey: c.WorkingDir,
+	}
+}
+
+func (c *Configuration) Validate(validator ConfigValidator) error {
 	return validator.Struct(c)
 }
