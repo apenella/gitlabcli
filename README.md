@@ -47,6 +47,7 @@ working_dir: /projects
 - **Get**
     - Get *project* details
     - Get *group* details
+- **Initialize**: Initialize gitlabcli configuration
 
 ## Authentication
 *list* and *get* operations uses Gitlab API and requires a Gitlab token.
