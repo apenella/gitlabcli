@@ -4,18 +4,17 @@ import (
 	"github.com/apenella/gitlabcli/internal/core/domain"
 )
 
-type GitlabRepository interface {
+type GitlabCloneRepository interface {
 	GitlabProjectRepository
-	GitlabGroupRepository
 }
 
 type GitlabProjectRepository interface {
-	FindProject(string) ([]domain.Project, error)
-	ListProjects() ([]domain.Project, error)
-	ListProjectsFromGroup(string) ([]domain.Project, error)
+	Find(string) ([]domain.Project, error)
+	List() ([]domain.Project, error)
+	ListFromGroup(string) ([]domain.Project, error)
 }
 
 type GitlabGroupRepository interface {
-	FindGroup(string) ([]domain.Group, error)
-	ListGroups() ([]domain.Group, error)
+	Find(string) ([]domain.Group, error)
+	List() ([]domain.Group, error)
 }

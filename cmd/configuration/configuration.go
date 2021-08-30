@@ -17,7 +17,7 @@ type Configuration struct {
 	// Token to authenticate
 	Token string `mapstructure:"gitlab_token" validate:"required"`
 	// workingDir
-	WorkingDir string `mapstructure:"working_dir,omitempty" validate:"required,dir"`
+	WorkingDir string `mapstructure:"working_dir,omitempty" validate:"required"`
 }
 
 func New(base, token, workingDir string) *Configuration {

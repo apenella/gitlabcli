@@ -2,9 +2,13 @@ package listproject
 
 import (
 	"fmt"
+	"os"
 
-	handler "github.com/apenella/gitlabcli/internal/handlers"
+	"github.com/apenella/gitlabcli/internal/core/ports"
+	listservice "github.com/apenella/gitlabcli/internal/core/services/list"
+	handler "github.com/apenella/gitlabcli/internal/handlers/cli/list"
 	"github.com/apenella/gitlabcli/pkg/command"
+	errors "github.com/apenella/go-common-utils/error"
 	"github.com/spf13/cobra"
 )
 
@@ -27,9 +31,23 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getProjectsCmd)
 }
 
-func RunEHandler(h handler.CliHandler) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(gitlab ports.GitlabProjectRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
+		var service listservice.ListProjectService
+		var h handler.ListProjectCliHandler
+
+		errContext := "listproject::RunEHandler"
+
+		service, err = listservice.NewListProjectService(gitlab)
+		if err != nil {
+			return errors.New(errContext, "Gitlab service could not be created", err)
+		}
+
+		h, err = handler.NewListProjectCliHandler(service, os.Stdout)
+		if err != nil {
+			return errors.New(errContext, "Handler cli could not be created", err)
+		}
 
 		if group != "" {
 			err = h.ListProjectsFromGroup(group)
@@ -38,7 +56,7 @@ func RunEHandler(h handler.CliHandler) func(cmd *cobra.Command, args []string) e
 		}
 
 		if err != nil {
-			return err
+			return errors.New(errContext, "Project could not be listed", err)
 		}
 
 		return nil

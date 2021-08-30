@@ -2,10 +2,16 @@ package clone
 
 import (
 	"fmt"
+	"os"
 
-	handler "github.com/apenella/gitlabcli/internal/handlers"
+	"github.com/apenella/gitlabcli/internal/core/ports"
+	cloneservice "github.com/apenella/gitlabcli/internal/core/services/clone"
+	handler "github.com/apenella/gitlabcli/internal/handlers/cli/clone"
+	gitrepo "github.com/apenella/gitlabcli/internal/repositories/git"
+	storagerepo "github.com/apenella/gitlabcli/internal/repositories/storage"
 	"github.com/apenella/gitlabcli/pkg/command"
 	errors "github.com/apenella/go-common-utils/error"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -31,10 +37,35 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(cloneCmd)
 }
 
-func RunEHandler(h handler.CliHandler) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(gitlab ports.GitlabCloneRepository, workingDir string) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
+		var git gitrepo.GitRepository
+		var service cloneservice.CloneService
+		var storage storagerepo.ProjectStorage
+		var h handler.CloneCliHandler
+
 		errContext := "clone::RunEHandler"
+
+		git, err = gitrepo.NewGitRepository()
+		if err != nil {
+			return errors.New(errContext, "Git repository could not be created", err)
+		}
+
+		storage = storagerepo.New(afero.NewOsFs())
+
+		service, err = cloneservice.NewCloneService(
+			gitlab,
+			git,
+			storage,
+			cloneservice.WithUseNamespacePath(),
+			cloneservice.WithBasePath(workingDir),
+		)
+
+		h, err = handler.NewCloneCliHandler(service, os.Stdout)
+		if err != nil {
+			return errors.New(errContext, "Handler cli could not be created", err)
+		}
 
 		if group != "" {
 			err = h.CloneProjectFromGroup(group)
