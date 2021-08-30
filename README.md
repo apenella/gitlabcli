@@ -5,6 +5,7 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
 - [Gitlabcli](#gitlabcli)
   - [Getting started](#getting-started)
     - [Configuration](#configuration)
+      - [Configuration parameteres](#configuration-parameteres)
     - [Commands](#commands)
   - [Authentication](#authentication)
   - [Features for later updates](#features-for-later-updates)
@@ -16,6 +17,13 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
 ### Configuration
 Before start using *gitlabcli* you must create its configuration file.
 By default, configuration file location is `~/.config/gitlabcli/config.yml` but you could store it to any location. In that case, `--config` flag must be provided on the command call.
+
+You could run the `initialize` subcommand to initialize `gitlabcli`. That command take cares to initialize the configuration parameters properly.
+```
+gitlabcli initialize --base-url https://mygitlab.com --working-dir /projects
+```
+
+#### Configuration parameteres
 
 | Parameter  | Type  | Description |
 |---|---|---|
@@ -39,6 +47,7 @@ working_dir: /projects
 - **Get**
     - Get *project* details
     - Get *group* details
+- **Initialize**: Initialize gitlabcli configuration
 
 ## Authentication
 *list* and *get* operations uses Gitlab API and requires a Gitlab token.
