@@ -4,15 +4,56 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
 
 - [Gitlabcli](#gitlabcli)
   - [Getting started](#getting-started)
+    - [Installation](#installation)
+      - [Installation from tarball](#installation-from-tarball)
     - [Configuration](#configuration)
       - [Configuration parameteres](#configuration-parameteres)
     - [Commands](#commands)
-  - [Authentication](#authentication)
-  - [Features for later updates](#features-for-later-updates)
+    - [Authentication](#authentication)
+  - [Comming updates, new features or ideas](#comming-updates-new-features-or-ideas)
+  - [License](#license)
 
 > **Disclaimer**: Gitlabcli has only been tested on Linux systems
 
 ## Getting started
+
+### Installation
+
+#### Installation from tarball
+- Download `gitlabcli` tarball from github releases
+```sh
+$ curl -sLO https://github.com/apenella/gitlabcli/releases/download/v0.1.0/gitlabcli_0.1.0_Linux-x86_64.tar.gz
+```
+
+- Untar `gitlabcli` package
+```sh
+$ tar xzfv gitlabcli_0.1.0_Linux-x86_64.tar.gz
+```
+
+- Start using `gitlabcli`
+```sh
+$ gitlabcli -help
+Set of utils to manage Gitlab repositories
+
+Usage:
+  gitlabcli [flags]
+  gitlabcli [command]
+
+Available Commands:
+  clone       Clone repositories from Gitlab to localhost
+  completion  generate the autocompletion script for the specified shell
+  get         Get information from Gitlab
+  help        Help about any command
+  initialize  Initializes gitlabcli
+  list        List Gitlab contents
+  version     gitlabcli version
+
+Flags:
+      --config string   Configuration file
+  -h, --help            help for gitlabcli
+
+Use "gitlabcli [command] --help" for more information about a command.
+```
 
 ### Configuration
 Before start using *gitlabcli* you must create its configuration file.
@@ -42,18 +83,22 @@ working_dir: /projects
 ### Commands
 - **Clone**: Clone one or multiple projects from Gitlab. It also supports to clone all Gitlab projects or those projects that belong to a group.
 - **List**
-    - Achieve a list of *projects*
-    - Achieve a list of *groups*
+    - Achieve a Gitlab *projects* list
+    - Achieve a Gitlab *groups* list
 - **Get**
     - Get *project* details
     - Get *group* details
 - **Initialize**: Initialize gitlabcli configuration
 
-## Authentication
+### Authentication
 *list* and *get* operations uses Gitlab API and requires a Gitlab token.
 
 *Clone* operations only support to clone over ssh and the only supported authentication method is ssh-agent
 
-## Features for later updates
-- Clone authentication using a key file
-- Clone over http/s and authenticating with user/password
+## Comming updates, new features or ideas
+- Private key file authentication when cloning projects
+- User/pass authentication when cloning projects over HTTP/S
+- Improve list projects and group output
+  
+## License
+gitlabcli is available under [MIT](https://github.com/apenella/gitlabcli/blob/master/LICENSE) license.
