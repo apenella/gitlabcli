@@ -20,3 +20,7 @@ func NewListGroupService(gitlab ports.GitlabGroupRepository) (ListGroupService, 
 func (s ListGroupService) List() ([]domain.Group, error) {
 	return s.gitlab.List()
 }
+
+func (s ListGroupService) ListProjects(group string) ([]domain.Project, error) {
+	return s.gitlab.ListProjects(group)
+}

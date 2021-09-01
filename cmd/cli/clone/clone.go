@@ -16,7 +16,7 @@ import (
 )
 
 var cloneAll bool
-var group string
+var groupName string
 
 //var dir, group string
 
@@ -31,13 +31,13 @@ func NewCommand() *command.AppCommand {
 	}
 
 	cloneCmd.Flags().BoolVar(&cloneAll, "all", false, "Clone all projects from all groups")
-	cloneCmd.Flags().StringVarP(&group, "group", "g", "", "Group which its projects have to be cloned")
+	cloneCmd.Flags().StringVarP(&groupName, "group", "g", "", "Group which its projects have to be cloned")
 	//cloneCmd.Flags().StringVarP(&dir, "directory", "d", "", "Directory to clone the project")
 
 	return command.NewCommand(cloneCmd)
 }
 
-func RunEHandler(gitlab ports.GitlabCloneRepository, workingDir string) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, workingDir string) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
 		var git gitrepo.GitRepository
@@ -55,7 +55,8 @@ func RunEHandler(gitlab ports.GitlabCloneRepository, workingDir string) func(cmd
 		storage = storagerepo.New(afero.NewOsFs())
 
 		service, err = cloneservice.NewCloneService(
-			gitlab,
+			project,
+			group,
 			git,
 			storage,
 			cloneservice.WithUseNamespacePath(),
@@ -67,10 +68,10 @@ func RunEHandler(gitlab ports.GitlabCloneRepository, workingDir string) func(cmd
 			return errors.New(errContext, "Handler cli could not be created", err)
 		}
 
-		if group != "" {
-			err = h.CloneProjectFromGroup(group)
+		if groupName != "" {
+			err = h.CloneProjectFromGroup(groupName)
 			if err != nil {
-				return errors.New(errContext, fmt.Sprintf("Error cloning projects from group '%s'", group), err)
+				return errors.New(errContext, fmt.Sprintf("Error cloning projects from group '%s'", groupName), err)
 			}
 		}
 

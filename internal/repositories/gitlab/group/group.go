@@ -2,13 +2,25 @@ package group
 
 import (
 	"github.com/apenella/gitlabcli/internal/core/domain"
-	gitlabrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab"
 	errors "github.com/apenella/go-common-utils/error"
 	gitlab "github.com/xanzy/go-gitlab"
 )
 
+type GitlabGroupLister interface {
+	ListGroups(opt *gitlab.ListGroupsOptions, options ...gitlab.RequestOptionFunc) ([]*gitlab.Group, *gitlab.Response, error)
+	ListGroupProjects(gid interface{}, opt *gitlab.ListGroupProjectsOptions, options ...gitlab.RequestOptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
+}
+
 type GitlabGroupRepository struct {
-	gitlabrepo.GitlabRepository
+	group   GitlabGroupLister
+	perPage int
+}
+
+func NewGitlabGroupRepository(group GitlabGroupLister, perPage int) *GitlabGroupRepository {
+	return &GitlabGroupRepository{
+		group:   group,
+		perPage: perPage,
+	}
 }
 
 func (g GitlabGroupRepository) Find(name string) ([]domain.Group, error) {
@@ -20,7 +32,7 @@ func (g GitlabGroupRepository) Find(name string) ([]domain.Group, error) {
 	listGroupsOptions := &gitlab.ListGroupsOptions{
 		ListOptions: gitlab.ListOptions{
 			Page:    1,
-			PerPage: g.PerPage,
+			PerPage: g.perPage,
 		},
 		Search: &name,
 	}
@@ -47,7 +59,7 @@ func (g GitlabGroupRepository) List() ([]domain.Group, error) {
 	listGroupsOptions := &gitlab.ListGroupsOptions{
 		ListOptions: gitlab.ListOptions{
 			Page:    1,
-			PerPage: g.PerPage,
+			PerPage: g.perPage,
 		},
 	}
 
@@ -68,17 +80,69 @@ func (g GitlabGroupRepository) list(options *gitlab.ListGroupsOptions, list []*g
 
 	errContext := "gitlabrepo::listGroups"
 
-	local_list, _, err := g.Client.Groups.ListGroups(options)
+	local_list, _, err := g.group.ListGroups(options)
 	if err != nil {
 		return nil, errors.New(errContext, "Gitlab client could not list groups", err)
 	}
 
 	list = append(list, local_list...)
 
-	if len(local_list) < g.PerPage {
+	if len(local_list) < g.perPage {
 		return list, nil
 	} else {
 		options.ListOptions.Page++
 		return g.list(options, list)
+	}
+}
+
+func (g GitlabGroupRepository) ListProjects(group string) ([]domain.Project, error) {
+	projects := []domain.Project{}
+
+	group_list, err := g.Find(group)
+	if err != nil {
+		return projects, err
+	}
+
+	for _, list := range group_list {
+		listGroupProjectsOptions := &gitlab.ListGroupProjectsOptions{
+			ListOptions: gitlab.ListOptions{
+				Page:    1,
+				PerPage: g.perPage,
+			},
+		}
+		list, err := g.listProjects(list.Id, listGroupProjectsOptions, []*gitlab.Project{})
+		if err != nil {
+			return projects, err
+		}
+
+		for _, item := range list {
+			p := domain.NewProject(
+				item.ID,
+				item.Name,
+				item.DefaultBranch,
+				item.PathWithNamespace,
+				item.SSHURLToRepo,
+				item.HTTPURLToRepo)
+			projects = append(projects, p)
+		}
+	}
+
+	return projects, nil
+}
+
+func (g GitlabGroupRepository) listProjects(id int, options *gitlab.ListGroupProjectsOptions, list []*gitlab.Project) ([]*gitlab.Project, error) {
+
+	localList, _, err := g.group.ListGroupProjects(id, options)
+	if err != nil {
+		return nil, err
+	}
+
+	list = append(list, localList...)
+
+	if len(localList) < g.perPage {
+		return list, nil
+	} else {
+		options.ListOptions.Page++
+		return g.listProjects(id, options, list)
 	}
 }

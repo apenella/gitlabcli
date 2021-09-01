@@ -20,7 +20,7 @@ By default, configuration file location is `~/.config/gitlabcli/config.yml` but 
 
 You could run the `initialize` subcommand to initialize `gitlabcli`. That command take cares to initialize the configuration parameters properly.
 ```
-gitlabcli initialize --base-url https://mygitlab.com --working-dir /projects
+gitlabcli initialize --base-url https://mygitlab.com/api/v4 --working-dir /projects
 ```
 
 #### Configuration parameteres

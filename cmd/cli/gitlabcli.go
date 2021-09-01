@@ -29,6 +29,8 @@ import (
 
 const DefaultConfigFile = "config"
 
+const PerPage = 100
+
 var viperconfig *viper.Viper
 
 func init() {
@@ -98,7 +100,7 @@ func NewCommand() *command.AppCommand {
 			// 	return errors.New(errContext, "Git repository could not be created", err)
 			// }
 
-			gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, 100)
+			gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 			if err != nil {
 				return errors.New(errContext, "Gitlab repository could not be created", err)
 			}
@@ -123,24 +125,26 @@ func NewCommand() *command.AppCommand {
 			// }
 
 			listGroupsSubcommand.Options(command.WithRunE(listgroup.RunEHandler(
-				gitlabgrouprepo.GitlabGroupRepository{gitlab},
+				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
 			)))
 
 			listProjectsSubcommand.Options(command.WithRunE(listproject.RunEHandler(
-				gitlabprojectrepo.GitlabProjectRepository{gitlab},
+				gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
+				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
 			)))
 
 			getGroupSubcommand.Options(command.WithRunE(getgroup.RunEHandler(
-				gitlabgrouprepo.GitlabGroupRepository{gitlab},
+				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
 			)))
 
 			getProjectSubcommand.Options(command.WithRunE(getproject.RunEHandler(
-				gitlabprojectrepo.GitlabProjectRepository{gitlab},
+				gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
 			)))
 
 			cloneSubcommand.Options(
 				command.WithRunE(clone.RunEHandler(
-					gitlabprojectrepo.GitlabProjectRepository{gitlab},
+					gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
+					gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
 					conf.WorkingDir)))
 
 			return nil

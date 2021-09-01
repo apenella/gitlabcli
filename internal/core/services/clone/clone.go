@@ -17,7 +17,8 @@ const (
 )
 
 type CloneService struct {
-	gitlab           ports.GitlabCloneRepository
+	project          ports.GitlabProjectRepository
+	group            ports.GitlabGroupRepository
 	git              ports.GitRepository
 	storage          ports.StorageRepository
 	mode             uint8
@@ -50,9 +51,10 @@ func WithDir(d string) OptionsFunc {
 	}
 }
 
-func NewCloneService(gitlab ports.GitlabCloneRepository, git ports.GitRepository, storage ports.StorageRepository, opts ...OptionsFunc) (CloneService, error) {
+func NewCloneService(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, git ports.GitRepository, storage ports.StorageRepository, opts ...OptionsFunc) (CloneService, error) {
 	s := &CloneService{
-		gitlab:  gitlab,
+		project: project,
+		group:   group,
 		git:     git,
 		storage: storage,
 	}
@@ -69,7 +71,7 @@ func (s CloneService) CloneProject(project string) error {
 	errContext := "service::CloneProject"
 	errs := []error{}
 
-	projects, err := s.gitlab.Find(project)
+	projects, err := s.project.Find(project)
 	if err != nil {
 		return errors.New(errContext, fmt.Sprintf("Project '%s' could not be found", project), err)
 	}
@@ -92,7 +94,7 @@ func (s CloneService) CloneProjectsFromGroup(group string) error {
 	errContext := "service::CloneProjectsFromGroup"
 	errs := []error{}
 
-	projects, err := s.gitlab.ListFromGroup(group)
+	projects, err := s.group.ListProjects(group)
 	if err != nil {
 		return errors.New(errContext, fmt.Sprintf("Project from group '%s' could not be achieved", group), err)
 	}
@@ -115,7 +117,7 @@ func (s CloneService) CloneAll() error {
 	errContext := "service::CloneProject"
 	errs := []error{}
 
-	projects, err := s.gitlab.List()
+	projects, err := s.project.List()
 	if err != nil {
 		return errors.New(errContext, "Project could not be achieved", err)
 	}

@@ -40,24 +40,3 @@ func (h ListProjectCliHandler) ListProjects() error {
 
 	return nil
 }
-
-func (h ListProjectCliHandler) ListProjectsFromGroup(group string) error {
-
-	errContext := "clihandler::ListProjectsFromGroup"
-
-	if h.service == nil {
-		return errors.New(errContext, "Handler service is not defined")
-	}
-
-	data, err := h.service.ListFromGroup(group)
-	if err != nil {
-		return errors.New(errContext, fmt.Sprintf("Could not list projects from group '%s'", group), err)
-	}
-
-	fmt.Fprintf(h.writer, "List projects from group: '%s'\n", group)
-	for _, item := range data {
-		fmt.Fprintf(h.writer, "%s\n", item)
-	}
-
-	return nil
-}

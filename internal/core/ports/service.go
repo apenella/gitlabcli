@@ -12,11 +12,11 @@ type GetProjectService interface {
 
 type ListGroupService interface {
 	List() ([]domain.Group, error)
+	ListProjects(string) ([]domain.Project, error)
 }
 
 type ListProjectService interface {
 	List() ([]domain.Project, error)
-	ListFromGroup(string) ([]domain.Project, error)
 }
 
 type GitCloneService interface {

@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var group string
+var groupName string
 
 func NewCommand() *command.AppCommand {
 
@@ -26,33 +26,45 @@ func NewCommand() *command.AppCommand {
 		},
 	}
 
-	getProjectsCmd.Flags().StringVarP(&group, "group", "g", "", "Gitlab group name to be consulted")
+	getProjectsCmd.Flags().StringVarP(&groupName, "group", "g", "", "Gitlab group name to be consulted")
 
 	return command.NewCommand(getProjectsCmd)
 }
 
-func RunEHandler(gitlab ports.GitlabProjectRepository) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
-		var service listservice.ListProjectService
-		var h handler.ListProjectCliHandler
+		var projectService listservice.ListProjectService
+		var groupService listservice.ListGroupService
+		var projectHandler handler.ListProjectCliHandler
+		var groupHandler handler.ListGroupCliHandler
 
 		errContext := "listproject::RunEHandler"
 
-		service, err = listservice.NewListProjectService(gitlab)
+		projectService, err = listservice.NewListProjectService(project)
 		if err != nil {
-			return errors.New(errContext, "Gitlab service could not be created", err)
+			return errors.New(errContext, "Gitlab group service could not be created", err)
 		}
 
-		h, err = handler.NewListProjectCliHandler(service, os.Stdout)
+		projectHandler, err = handler.NewListProjectCliHandler(projectService, os.Stdout)
 		if err != nil {
-			return errors.New(errContext, "Handler cli could not be created", err)
+			return errors.New(errContext, "Group handler cli could not be created", err)
 		}
 
-		if group != "" {
-			err = h.ListProjectsFromGroup(group)
+		groupService, err = listservice.NewListGroupService(group)
+		if err != nil {
+			return errors.New(errContext, "Gitlab group service could not be created", err)
+		}
+
+		groupHandler, err = handler.NewListGroupCliHandler(groupService, os.Stdout)
+		if err != nil {
+			return errors.New(errContext, "Group handler cli could not be created", err)
+		}
+
+		if groupName != "" {
+			err = groupHandler.ListProjectsFromGroup(groupName)
 		} else {
-			err = h.ListProjects()
+			err = projectHandler.ListProjects()
 		}
 
 		if err != nil {
