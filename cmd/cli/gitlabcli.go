@@ -2,7 +2,6 @@ package gitlabcli
 
 import (
 	"fmt"
-	"os"
 	"os/user"
 	"path/filepath"
 
@@ -17,12 +16,9 @@ import (
 	"github.com/apenella/gitlabcli/cmd/cli/version"
 	"github.com/apenella/gitlabcli/cmd/configuration"
 	loadconfiguration "github.com/apenella/gitlabcli/cmd/configuration/load"
-	"github.com/apenella/gitlabcli/internal/core/ports"
-	service "github.com/apenella/gitlabcli/internal/core/services"
-	handler "github.com/apenella/gitlabcli/internal/handlers"
-	gitrepo "github.com/apenella/gitlabcli/internal/repositories/git"
 	gitlabrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab"
-	storagerepo "github.com/apenella/gitlabcli/internal/repositories/storage"
+	gitlabgrouprepo "github.com/apenella/gitlabcli/internal/repositories/gitlab/group"
+	gitlabprojectrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab/project"
 	"github.com/apenella/gitlabcli/pkg/command"
 	errors "github.com/apenella/go-common-utils/error"
 	"github.com/go-playground/validator/v10"
@@ -32,6 +28,8 @@ import (
 )
 
 const DefaultConfigFile = "config"
+
+const PerPage = 100
 
 var viperconfig *viper.Viper
 
@@ -63,11 +61,7 @@ func NewCommand() *command.AppCommand {
 		listProjectsSubcommand,
 		listSubcommand,
 		versionSubcommand *command.AppCommand
-	var gitRepo gitrepo.GitRepository
-	var glRepo gitlabrepo.GitlabRepository
-	var glSrv ports.Service
-	var glStorage storagerepo.ProjectStorage
-	var cliHandler handler.CliHandler
+	var gitlab gitlabrepo.GitlabRepository
 
 	gitlabCmd := &cobra.Command{
 		Use:   "gitlabcli",
@@ -80,8 +74,6 @@ func NewCommand() *command.AppCommand {
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 
 			errContext := "gitlabcli::NewCommand::PersistentPreRunE"
-
-			fmt.Println(errContext)
 
 			err = loadconfiguration.Load(viperconfig, afero.NewOsFs(), configFile)
 			if err != nil {
@@ -99,40 +91,33 @@ func NewCommand() *command.AppCommand {
 				return errors.New(errContext, "Invalid configuration", err)
 			}
 
-			gitRepo, err = gitrepo.NewGitRepository()
-			if err != nil {
-				return errors.New(errContext, "Git repository could not be created", err)
-			}
-
-			glRepo, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL)
+			gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 			if err != nil {
 				return errors.New(errContext, "Gitlab repository could not be created", err)
 			}
 
-			glStorage = storagerepo.New(afero.NewOsFs())
+			listGroupsSubcommand.Options(command.WithRunE(listgroup.RunEHandler(
+				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+			)))
 
-			glSrv, err = service.New(
-				glRepo,
-				gitRepo,
-				glStorage,
-				service.WithUseNamespacePath(),
-				service.WithBasePath(conf.WorkingDir),
-			)
+			listProjectsSubcommand.Options(command.WithRunE(listproject.RunEHandler(
+				gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
+				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+			)))
 
-			if err != nil {
-				return errors.New(errContext, "Gitlab service could not be created", err)
-			}
+			getGroupSubcommand.Options(command.WithRunE(getgroup.RunEHandler(
+				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+			)))
 
-			cliHandler, err = handler.NewCliHandler(glSrv, os.Stdout)
-			if err != nil {
-				return errors.New(errContext, "Handler cli could not be created", err)
-			}
+			getProjectSubcommand.Options(command.WithRunE(getproject.RunEHandler(
+				gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
+			)))
 
-			listGroupsSubcommand.Options(command.WithRunE(listgroup.RunEHandler(cliHandler)))
-			listProjectsSubcommand.Options(command.WithRunE(listproject.RunEHandler(cliHandler)))
-			getGroupSubcommand.Options(command.WithRunE(getgroup.RunEHandler(cliHandler)))
-			getProjectSubcommand.Options(command.WithRunE(getproject.RunEHandler(cliHandler)))
-			cloneSubcommand.Options(command.WithRunE(clone.RunEHandler(cliHandler)))
+			cloneSubcommand.Options(
+				command.WithRunE(clone.RunEHandler(
+					gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
+					gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+					conf.WorkingDir)))
 
 			return nil
 		},

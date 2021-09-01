@@ -2,9 +2,13 @@ package listgroup
 
 import (
 	"fmt"
+	"os"
 
-	handler "github.com/apenella/gitlabcli/internal/handlers"
+	"github.com/apenella/gitlabcli/internal/core/ports"
+	listservice "github.com/apenella/gitlabcli/internal/core/services/list"
+	handler "github.com/apenella/gitlabcli/internal/handlers/cli/list"
 	"github.com/apenella/gitlabcli/pkg/command"
+	errors "github.com/apenella/go-common-utils/error"
 	"github.com/spf13/cobra"
 )
 
@@ -23,9 +27,25 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getGroupCmd)
 }
 
-func RunEHandler(h handler.CliHandler) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(gitlab ports.GitlabGroupRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		err := h.ListGroups()
+		var err error
+		var service listservice.ListGroupService
+		var h handler.ListGroupCliHandler
+
+		errContext := "listgroup::RunEHandler"
+
+		service, err = listservice.NewListGroupService(gitlab)
+		if err != nil {
+			return errors.New(errContext, "Gitlab service could not be created", err)
+		}
+
+		h, err = handler.NewListGroupCliHandler(service, os.Stdout)
+		if err != nil {
+			return errors.New(errContext, "Handler cli could not be created", err)
+		}
+
+		err = h.ListGroups()
 		if err != nil {
 			return err
 		}

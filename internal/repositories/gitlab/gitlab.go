@@ -10,10 +10,11 @@ const (
 )
 
 type GitlabRepository struct {
-	client *gitlab.Client
+	Client  *gitlab.Client
+	PerPage int
 }
 
-func NewGitlabRepository(token, baseurl string) (GitlabRepository, error) {
+func NewGitlabRepository(token, baseurl string, perpage int) (GitlabRepository, error) {
 
 	errContext := "gitlabrepo::NewGitlabRepository"
 
@@ -23,6 +24,7 @@ func NewGitlabRepository(token, baseurl string) (GitlabRepository, error) {
 	}
 
 	return GitlabRepository{
-		client: client,
+		Client:  client,
+		PerPage: perpage,
 	}, nil
 }

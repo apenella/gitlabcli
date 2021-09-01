@@ -17,7 +17,7 @@ type Configuration struct {
 	// Token to authenticate
 	Token string `mapstructure:"gitlab_token" validate:"required"`
 	// workingDir
-	WorkingDir string `mapstructure:"working_dir,omitempty" validate:"required,dir"`
+	WorkingDir string `mapstructure:"working_dir,omitempty" validate:"required"`
 }
 
 func New(base, token, workingDir string) *Configuration {
@@ -28,7 +28,7 @@ func New(base, token, workingDir string) *Configuration {
 	}
 }
 
-func (c Configuration) ToMap() map[string]interface{} {
+func (c *Configuration) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		BaseUrlKey:    c.BaseURL,
 		TokenKey:      c.Token,

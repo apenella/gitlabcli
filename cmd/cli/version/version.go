@@ -2,6 +2,7 @@ package version
 
 import (
 	"os"
+	"runtime"
 
 	"github.com/apenella/gitlabcli/cmd/release"
 	"github.com/apenella/gitlabcli/pkg/command"
@@ -16,8 +17,9 @@ func NewCommand() *command.AppCommand {
 		PersistentPreRunE: nil,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			r := release.NewRelease(os.Stdout)
-			err := r.PrintVersion()
+			r := release.NewRelease(runtime.GOOS, runtime.GOARCH)
+			o := release.NewReleaseOutput(os.Stdout)
+			err := o.Text(r)
 			if err != nil {
 				return err
 			}
