@@ -9,11 +9,6 @@ type GitlabProjectLister interface {
 	ListProjects(opt *gitlab.ListProjectsOptions, options ...gitlab.RequestOptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
 }
 
-// type GitlabGroupLister interface {
-// 	ListGroups(opt *gitlab.ListGroupsOptions, options ...gitlab.RequestOptionFunc) ([]*gitlab.Group, *gitlab.Response, error)
-// 	ListGroupProjects(gid interface{}, opt *gitlab.ListGroupProjectsOptions, options ...gitlab.RequestOptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
-// }
-
 type GitlabProjectRepository struct {
 	perPage int
 	project GitlabProjectLister

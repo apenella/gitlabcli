@@ -52,7 +52,7 @@ func RunEHandler(gitlab ports.GitlabGroupRepository) func(cmd *cobra.Command, ar
 			err = h.GetGroup(group)
 
 			if err != nil {
-				return err
+				return errors.New(errContext, "Group detail could not be achieved", err)
 			}
 		}
 

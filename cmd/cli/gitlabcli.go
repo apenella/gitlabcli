@@ -61,11 +61,7 @@ func NewCommand() *command.AppCommand {
 		listProjectsSubcommand,
 		listSubcommand,
 		versionSubcommand *command.AppCommand
-	//var gitRepo gitrepo.GitRepository
 	var gitlab gitlabrepo.GitlabRepository
-	//var glSrv ports.Service
-	//var glStorage storagerepo.ProjectStorage
-	//var cliHandler handler.CliHandler
 
 	gitlabCmd := &cobra.Command{
 		Use:   "gitlabcli",
@@ -95,34 +91,10 @@ func NewCommand() *command.AppCommand {
 				return errors.New(errContext, "Invalid configuration", err)
 			}
 
-			// gitRepo, err = gitrepo.NewGitRepository()
-			// if err != nil {
-			// 	return errors.New(errContext, "Git repository could not be created", err)
-			// }
-
 			gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 			if err != nil {
 				return errors.New(errContext, "Gitlab repository could not be created", err)
 			}
-
-			// glStorage = storagerepo.New(afero.NewOsFs())
-
-			// glSrv, err = service.New(
-			// 	glRepo,
-			// 	gitRepo,
-			// 	glStorage,
-			// 	service.WithUseNamespacePath(),
-			// 	service.WithBasePath(conf.WorkingDir),
-			// )
-
-			// if err != nil {
-			// 	return errors.New(errContext, "Gitlab service could not be created", err)
-			// }
-
-			// cliHandler, err = handler.NewCliHandler(glSrv, os.Stdout)
-			// if err != nil {
-			// 	return errors.New(errContext, "Handler cli could not be created", err)
-			// }
 
 			listGroupsSubcommand.Options(command.WithRunE(listgroup.RunEHandler(
 				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),

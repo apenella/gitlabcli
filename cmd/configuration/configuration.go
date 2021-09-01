@@ -28,7 +28,7 @@ func New(base, token, workingDir string) *Configuration {
 	}
 }
 
-func (c Configuration) ToMap() map[string]interface{} {
+func (c *Configuration) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		BaseUrlKey:    c.BaseURL,
 		TokenKey:      c.Token,

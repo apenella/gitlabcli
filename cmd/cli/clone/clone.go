@@ -62,6 +62,9 @@ func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupR
 			cloneservice.WithUseNamespacePath(),
 			cloneservice.WithBasePath(workingDir),
 		)
+		if err != nil {
+			return errors.New(errContext, "Clone service could not be created", err)
+		}
 
 		h, err = handler.NewCloneCliHandler(service, os.Stdout)
 		if err != nil {

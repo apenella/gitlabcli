@@ -52,7 +52,7 @@ func RunEHandler(gitlab ports.GitlabProjectRepository) func(cmd *cobra.Command, 
 		for _, project := range args {
 			err = h.GetProject(project)
 			if err != nil {
-				return err
+				return errors.New(errContext, "Project detail could not be achieved", err)
 			}
 		}
 
