@@ -10,11 +10,11 @@ type ListGroupService struct {
 }
 
 func NewListGroupService(gitlab ports.GitlabGroupRepository) (ListGroupService, error) {
-	s := &ListGroupService{
+	s := ListGroupService{
 		gitlab: gitlab,
 	}
 
-	return *s, nil
+	return s, nil
 }
 
 func (s ListGroupService) List() ([]domain.Group, error) {

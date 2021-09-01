@@ -10,11 +10,11 @@ type ListProjectService struct {
 }
 
 func NewListProjectService(gitlab ports.GitlabProjectRepository) (ListProjectService, error) {
-	s := &ListProjectService{
+	s := ListProjectService{
 		gitlab: gitlab,
 	}
 
-	return *s, nil
+	return s, nil
 }
 
 func (s ListProjectService) List() ([]domain.Project, error) {

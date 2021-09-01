@@ -4,10 +4,6 @@ import (
 	"github.com/apenella/gitlabcli/internal/core/domain"
 )
 
-// type GitlabCloneRepository interface {
-// 	GitlabGroupRepository
-// }
-
 type GitlabProjectRepository interface {
 	Find(string) ([]domain.Project, error)
 	List() ([]domain.Project, error)

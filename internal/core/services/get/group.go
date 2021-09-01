@@ -10,11 +10,11 @@ type GetGroupService struct {
 }
 
 func NewGetGroupService(gitlab ports.GitlabGroupRepository) (GetGroupService, error) {
-	s := &GetGroupService{
+	s := GetGroupService{
 		gitlab: gitlab,
 	}
 
-	return *s, nil
+	return s, nil
 }
 
 func (s GetGroupService) Get(group string) ([]domain.Group, error) {

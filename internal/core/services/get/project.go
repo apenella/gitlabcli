@@ -10,11 +10,11 @@ type GetProjectService struct {
 }
 
 func NewGetProjectService(gitlab ports.GitlabProjectRepository) (GetProjectService, error) {
-	s := &GetProjectService{
+	s := GetProjectService{
 		gitlab: gitlab,
 	}
 
-	return *s, nil
+	return s, nil
 }
 
 func (s GetProjectService) Get(project string) ([]domain.Project, error) {
