@@ -7,6 +7,7 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
     - [Installation](#installation)
       - [Installation from tarball](#installation-from-tarball)
     - [Configuration](#configuration)
+      - [Environment variables](#environment-variables)
       - [Configuration parameteres](#configuration-parameteres)
     - [Commands](#commands)
     - [Authentication](#authentication)
@@ -59,10 +60,13 @@ Use "gitlabcli [command] --help" for more information about a command.
 Before start using *gitlabcli* you must create its configuration file.
 By default, configuration file location is `~/.config/gitlabcli/config.yml` but you could store it to any location. In that case, `--config` flag must be provided on the command call.
 
-You could run the `initialize` subcommand to initialize `gitlabcli`. That command take cares to initialize the configuration parameters properly.
+You could run the `initialize` subcommand to initialize `gitlabcli`. That command takes care to initialize the configuration parameters properly.
+```sh
+$ gitlabcli initialize --base-url https://mygitlab.com/api/v4 --working-dir /projects
 ```
-gitlabcli initialize --base-url https://mygitlab.com/api/v4 --working-dir /projects
-```
+
+#### Environment variables
+`gitlabcli` supports environment variables configuration. In that case, environment variables must be named as uppercased parameter name and prefixed by `GITLABCLI_`. For instance, `working_dir` parameter could be configured by `GITLABCLI_WORKING_DIR` environment variable.
 
 #### Configuration parameteres
 
