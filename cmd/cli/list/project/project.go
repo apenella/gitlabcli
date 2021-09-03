@@ -2,7 +2,6 @@ package listproject
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	listservice "github.com/apenella/gitlabcli/internal/core/services/list"
@@ -31,13 +30,13 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getProjectsCmd)
 }
 
-func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, outputProject ports.GitlabProjectOutputRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
 		var projectService listservice.ListProjectService
 		var groupService listservice.ListGroupService
 		var projectHandler handler.ListProjectCliHandler
-		var groupHandler handler.ListGroupCliHandler
+		var groupHandler handler.ListGroupProjectCliHandler
 
 		errContext := "listproject::RunEHandler"
 
@@ -46,7 +45,7 @@ func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupR
 			return errors.New(errContext, "Gitlab group service could not be created", err)
 		}
 
-		projectHandler, err = handler.NewListProjectCliHandler(projectService, os.Stdout)
+		projectHandler, err = handler.NewListProjectCliHandler(projectService, outputProject)
 		if err != nil {
 			return errors.New(errContext, "Group handler cli could not be created", err)
 		}
@@ -56,7 +55,7 @@ func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupR
 			return errors.New(errContext, "Gitlab group service could not be created", err)
 		}
 
-		groupHandler, err = handler.NewListGroupCliHandler(groupService, os.Stdout)
+		groupHandler, err = handler.NewListGroupProjectCliHandler(groupService, outputProject)
 		if err != nil {
 			return errors.New(errContext, "Group handler cli could not be created", err)
 		}

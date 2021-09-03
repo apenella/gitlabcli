@@ -2,6 +2,7 @@ package gitlabcli
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"path/filepath"
 
@@ -16,9 +17,12 @@ import (
 	"github.com/apenella/gitlabcli/cmd/cli/version"
 	"github.com/apenella/gitlabcli/cmd/configuration"
 	loadconfiguration "github.com/apenella/gitlabcli/cmd/configuration/load"
+	"github.com/apenella/gitlabcli/internal/core/ports"
 	gitlabrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab"
 	gitlabgrouprepo "github.com/apenella/gitlabcli/internal/repositories/gitlab/group"
 	gitlabprojectrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab/project"
+	groupoutputrepo "github.com/apenella/gitlabcli/internal/repositories/output/group"
+	projectoutputrepo "github.com/apenella/gitlabcli/internal/repositories/output/project"
 	"github.com/apenella/gitlabcli/pkg/command"
 	errors "github.com/apenella/go-common-utils/error"
 	"github.com/go-playground/validator/v10"
@@ -62,6 +66,8 @@ func NewCommand() *command.AppCommand {
 		listSubcommand,
 		versionSubcommand *command.AppCommand
 	var gitlab gitlabrepo.GitlabRepository
+	var outputGroup ports.GitlabGroupOutputRepository
+	var outputProject ports.GitlabProjectOutputRepository
 
 	gitlabCmd := &cobra.Command{
 		Use:   "gitlabcli",
@@ -96,21 +102,28 @@ func NewCommand() *command.AppCommand {
 				return errors.New(errContext, "Gitlab repository could not be created", err)
 			}
 
+			outputGroup = groupoutputrepo.NewGroupOutputRepository(os.Stdout)
+			outputProject = projectoutputrepo.NewProjectOutputRepository(os.Stdout)
+
 			listGroupsSubcommand.Options(command.WithRunE(listgroup.RunEHandler(
 				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+				outputGroup,
 			)))
 
 			listProjectsSubcommand.Options(command.WithRunE(listproject.RunEHandler(
 				gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
 				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+				outputProject,
 			)))
 
 			getGroupSubcommand.Options(command.WithRunE(getgroup.RunEHandler(
 				gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
+				outputGroup,
 			)))
 
 			getProjectSubcommand.Options(command.WithRunE(getproject.RunEHandler(
 				gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
+				outputProject,
 			)))
 
 			cloneSubcommand.Options(

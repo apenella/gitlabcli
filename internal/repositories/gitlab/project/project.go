@@ -43,6 +43,7 @@ func (g GitlabProjectRepository) Find(name string) ([]domain.Project, error) {
 		p := domain.NewProject(
 			item.ID,
 			item.Name,
+			item.Description,
 			item.DefaultBranch,
 			item.PathWithNamespace,
 			item.SSHURLToRepo,
@@ -73,6 +74,7 @@ func (g GitlabProjectRepository) List() ([]domain.Project, error) {
 		p := domain.NewProject(
 			item.ID,
 			item.Name,
+			item.Description,
 			item.DefaultBranch,
 			item.PathWithNamespace,
 			item.SSHURLToRepo,

@@ -5,16 +5,18 @@ import "fmt"
 type Project struct {
 	Id            int
 	Name          string
+	Description   string
 	Path          string
 	Sshurl        string
 	Httpurl       string
 	DefaultBranch string
 }
 
-func NewProject(id int, name, branch, path, sshurl, httpurl string) Project {
+func NewProject(id int, name, description, branch, path, sshurl, httpurl string) Project {
 	return Project{
 		Id:            id,
 		Name:          name,
+		Description:   description,
 		Path:          path,
 		Sshurl:        sshurl,
 		Httpurl:       httpurl,

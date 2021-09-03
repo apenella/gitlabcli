@@ -2,18 +2,17 @@ package clihandler
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	errors "github.com/apenella/go-common-utils/error"
 )
 
 type GetProjectCliHandler struct {
-	writer  io.Writer
+	writer  ports.GitlabProjectOutputRepository
 	service ports.GetProjectService
 }
 
-func NewGetProjectCliHandler(s ports.GetProjectService, w io.Writer) (GetProjectCliHandler, error) {
+func NewGetProjectCliHandler(s ports.GetProjectService, w ports.GitlabProjectOutputRepository) (GetProjectCliHandler, error) {
 	return GetProjectCliHandler{
 		service: s,
 		writer:  w,
@@ -33,10 +32,7 @@ func (h GetProjectCliHandler) GetProject(project string) error {
 		return errors.New(errContext, fmt.Sprintf("Could not get project '%s'", project), err)
 	}
 
-	fmt.Fprintf(h.writer, "Get project: '%s'\n", project)
-	for _, item := range data {
-		fmt.Fprintf(h.writer, "%s\n", item)
-	}
+	h.writer.Table(data)
 
 	return nil
 }

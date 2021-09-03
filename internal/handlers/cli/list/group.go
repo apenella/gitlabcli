@@ -1,19 +1,16 @@
 package clihandler
 
 import (
-	"fmt"
-	"io"
-
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	errors "github.com/apenella/go-common-utils/error"
 )
 
 type ListGroupCliHandler struct {
-	writer  io.Writer
+	writer  ports.GitlabGroupOutputRepository
 	service ports.ListGroupService
 }
 
-func NewListGroupCliHandler(s ports.ListGroupService, w io.Writer) (ListGroupCliHandler, error) {
+func NewListGroupCliHandler(s ports.ListGroupService, w ports.GitlabGroupOutputRepository) (ListGroupCliHandler, error) {
 	return ListGroupCliHandler{
 		service: s,
 		writer:  w,
@@ -33,32 +30,25 @@ func (h ListGroupCliHandler) ListGroups() error {
 		return errors.New(errContext, "Could not list groups")
 	}
 
-	fmt.Fprintln(h.writer, "List groups")
-	for _, item := range data {
-		fmt.Fprintf(h.writer, "%s\n", item)
-
-	}
+	h.writer.Table(data)
 
 	return nil
 }
 
-func (h ListGroupCliHandler) ListProjectsFromGroup(group string) error {
+// func (h ListGroupCliHandler) ListProjectsFromGroup(group string) error {
 
-	errContext := "clihandler::ListProjectsFromGroup"
+// 	errContext := "clihandler::ListProjectsFromGroup"
 
-	if h.service == nil {
-		return errors.New(errContext, "Handler service is not defined")
-	}
+// 	if h.service == nil {
+// 		return errors.New(errContext, "Handler service is not defined")
+// 	}
 
-	data, err := h.service.ListProjects(group)
-	if err != nil {
-		return errors.New(errContext, fmt.Sprintf("Could not list projects from group '%s'", group), err)
-	}
+// 	data, err := h.service.ListProjects(group)
+// 	if err != nil {
+// 		return errors.New(errContext, fmt.Sprintf("Could not list projects from group '%s'", group), err)
+// 	}
 
-	fmt.Fprintf(h.writer, "List projects from group: '%s'\n", group)
-	for _, item := range data {
-		fmt.Fprintf(h.writer, "%s\n", item)
-	}
+// 	h.writerProject.Table(data)
 
-	return nil
-}
+// 	return nil
+// }
