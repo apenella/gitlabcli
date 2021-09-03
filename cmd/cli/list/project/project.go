@@ -30,7 +30,7 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getProjectsCmd)
 }
 
-func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, outputProject ports.GitlabProjectOutputRepository) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, output ports.GitlabProjectOutputRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
 		var projectService listservice.ListProjectService
@@ -45,7 +45,7 @@ func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupR
 			return errors.New(errContext, "Gitlab group service could not be created", err)
 		}
 
-		projectHandler, err = handler.NewListProjectCliHandler(projectService, outputProject)
+		projectHandler, err = handler.NewListProjectCliHandler(projectService, output)
 		if err != nil {
 			return errors.New(errContext, "Group handler cli could not be created", err)
 		}
@@ -55,7 +55,7 @@ func RunEHandler(project ports.GitlabProjectRepository, group ports.GitlabGroupR
 			return errors.New(errContext, "Gitlab group service could not be created", err)
 		}
 
-		groupHandler, err = handler.NewListGroupProjectCliHandler(groupService, outputProject)
+		groupHandler, err = handler.NewListGroupProjectCliHandler(groupService, output)
 		if err != nil {
 			return errors.New(errContext, "Group handler cli could not be created", err)
 		}
