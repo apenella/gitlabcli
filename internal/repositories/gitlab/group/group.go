@@ -43,7 +43,7 @@ func (g GitlabGroupRepository) Find(name string) ([]domain.Group, error) {
 	}
 
 	for _, item := range list {
-		g := domain.NewGroup(item.ID, item.Name)
+		g := domain.NewGroup(item.ID, item.Name, item.Description, item.FullPath, item.WebURL)
 		groups = append(groups, g)
 	}
 
@@ -69,7 +69,7 @@ func (g GitlabGroupRepository) List() ([]domain.Group, error) {
 	}
 
 	for _, item := range list {
-		g := domain.NewGroup(item.ID, item.Name)
+		g := domain.NewGroup(item.ID, item.Name, item.Description, item.FullPath, item.WebURL)
 		groups = append(groups, g)
 	}
 
@@ -119,6 +119,7 @@ func (g GitlabGroupRepository) ListProjects(group string) ([]domain.Project, err
 			p := domain.NewProject(
 				item.ID,
 				item.Name,
+				item.Description,
 				item.DefaultBranch,
 				item.PathWithNamespace,
 				item.SSHURLToRepo,

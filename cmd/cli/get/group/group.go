@@ -2,7 +2,6 @@ package getgroup
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	getservice "github.com/apenella/gitlabcli/internal/core/services/get"
@@ -30,7 +29,7 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getGroupCmd)
 }
 
-func RunEHandler(gitlab ports.GitlabGroupRepository) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(gitlab ports.GitlabGroupRepository, output ports.GitlabGroupOutputRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
 		var service getservice.GetGroupService
@@ -43,7 +42,7 @@ func RunEHandler(gitlab ports.GitlabGroupRepository) func(cmd *cobra.Command, ar
 			return errors.New(errContext, "Gitlab service could not be created", err)
 		}
 
-		h, err = handler.NewGetGroupCliHandler(service, os.Stdout)
+		h, err = handler.NewGetGroupCliHandler(service, output)
 		if err != nil {
 			return errors.New(errContext, "Handler cli could not be created", err)
 		}

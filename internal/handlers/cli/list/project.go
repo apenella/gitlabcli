@@ -1,19 +1,16 @@
 package clihandler
 
 import (
-	"fmt"
-	"io"
-
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	errors "github.com/apenella/go-common-utils/error"
 )
 
 type ListProjectCliHandler struct {
-	writer  io.Writer
+	writer  ports.GitlabProjectOutputRepository
 	service ports.ListProjectService
 }
 
-func NewListProjectCliHandler(s ports.ListProjectService, w io.Writer) (ListProjectCliHandler, error) {
+func NewListProjectCliHandler(s ports.ListProjectService, w ports.GitlabProjectOutputRepository) (ListProjectCliHandler, error) {
 	return ListProjectCliHandler{
 		service: s,
 		writer:  w,
@@ -33,10 +30,7 @@ func (h ListProjectCliHandler) ListProjects() error {
 		return errors.New(errContext, "Could not list projects", err)
 	}
 
-	fmt.Fprintln(h.writer, "List projects")
-	for _, item := range data {
-		fmt.Fprintf(h.writer, "%s\n", item)
-	}
+	h.writer.Table(data)
 
 	return nil
 }

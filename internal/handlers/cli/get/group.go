@@ -2,18 +2,17 @@ package clihandler
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	errors "github.com/apenella/go-common-utils/error"
 )
 
 type GetGroupCliHandler struct {
-	writer  io.Writer
+	writer  ports.GitlabGroupOutputRepository
 	service ports.GetGroupService
 }
 
-func NewGetGroupCliHandler(s ports.GetGroupService, w io.Writer) (GetGroupCliHandler, error) {
+func NewGetGroupCliHandler(s ports.GetGroupService, w ports.GitlabGroupOutputRepository) (GetGroupCliHandler, error) {
 	return GetGroupCliHandler{
 		service: s,
 		writer:  w,
@@ -33,9 +32,7 @@ func (h GetGroupCliHandler) GetGroup(group string) error {
 		return errors.New(errContext, fmt.Sprintf("Could not get group '%s'", group), err)
 	}
 
-	fmt.Fprintf(h.writer, "Get group: '%s'\n", group)
-	for _, item := range data {
-		fmt.Fprintf(h.writer, "%s\n", item)
-	}
+	h.writer.Table(data)
+
 	return nil
 }

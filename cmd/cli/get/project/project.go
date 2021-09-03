@@ -2,7 +2,6 @@ package getproject
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	getservice "github.com/apenella/gitlabcli/internal/core/services/get"
@@ -31,7 +30,7 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getProjectsCmd)
 }
 
-func RunEHandler(gitlab ports.GitlabProjectRepository) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(gitlab ports.GitlabProjectRepository, output ports.GitlabProjectOutputRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
 		var service getservice.GetProjectService
@@ -44,7 +43,7 @@ func RunEHandler(gitlab ports.GitlabProjectRepository) func(cmd *cobra.Command, 
 			return errors.New(errContext, "Gitlab service could not be created", err)
 		}
 
-		h, err = handler.NewGetProjectCliHandler(service, os.Stdout)
+		h, err = handler.NewGetProjectCliHandler(service, output)
 		if err != nil {
 			return errors.New(errContext, "Handler cli could not be created", err)
 		}

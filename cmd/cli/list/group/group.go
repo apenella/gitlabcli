@@ -2,7 +2,6 @@ package listgroup
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/apenella/gitlabcli/internal/core/ports"
 	listservice "github.com/apenella/gitlabcli/internal/core/services/list"
@@ -27,7 +26,7 @@ func NewCommand() *command.AppCommand {
 	return command.NewCommand(getGroupCmd)
 }
 
-func RunEHandler(gitlab ports.GitlabGroupRepository) func(cmd *cobra.Command, args []string) error {
+func RunEHandler(gitlab ports.GitlabGroupRepository, outputGroup ports.GitlabGroupOutputRepository) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		var err error
 		var service listservice.ListGroupService
@@ -40,7 +39,7 @@ func RunEHandler(gitlab ports.GitlabGroupRepository) func(cmd *cobra.Command, ar
 			return errors.New(errContext, "Gitlab service could not be created", err)
 		}
 
-		h, err = handler.NewListGroupCliHandler(service, os.Stdout)
+		h, err = handler.NewListGroupCliHandler(service, outputGroup)
 		if err != nil {
 			return errors.New(errContext, "Handler cli could not be created", err)
 		}
