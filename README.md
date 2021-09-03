@@ -102,7 +102,6 @@ working_dir: /projects
 ## Comming updates, new features or ideas
 - Private key file authentication when cloning projects
 - User/pass authentication when cloning projects over HTTP/S
-- Improve list projects and group output
   
 ## License
 gitlabcli is available under [MIT](https://github.com/apenella/gitlabcli/blob/master/LICENSE) license.

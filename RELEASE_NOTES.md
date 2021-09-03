@@ -1,9 +1,5 @@
 # RELEASE NOTES
 
-## [v0.1.0]
+## [undefined]
 ### Added
-- Command to list Gitlab projects
-- Command to get Gitlab project details 
-- Command to list Gitlab groups
-- Command to get Gitlab groups details
-- Command to clone projects from Gitlab
+- output group and projects is managed by output repository
