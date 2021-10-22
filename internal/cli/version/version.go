@@ -4,7 +4,7 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/apenella/gitlabcli/cmd/release"
+	"github.com/apenella/gitlabcli/internal/release"
 	"github.com/apenella/gitlabcli/pkg/command"
 	"github.com/spf13/cobra"
 )

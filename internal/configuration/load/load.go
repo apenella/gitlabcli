@@ -3,7 +3,7 @@ package load
 import (
 	"fmt"
 
-	"github.com/apenella/gitlabcli/cmd/configuration"
+	"github.com/apenella/gitlabcli/internal/configuration"
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 )

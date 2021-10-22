@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/apenella/go-common-utils/error v0.0.0-20210528133155-34ba915e28c8
 	github.com/go-git/go-git/v5 v5.4.2
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f
 	github.com/spf13/afero v1.6.0

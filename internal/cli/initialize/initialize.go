@@ -3,8 +3,8 @@ package initialize
 import (
 	"os"
 
-	"github.com/apenella/gitlabcli/cmd/configuration"
-	saveconfiguration "github.com/apenella/gitlabcli/cmd/configuration/save"
+	"github.com/apenella/gitlabcli/internal/configuration"
+	saveconfiguration "github.com/apenella/gitlabcli/internal/configuration/save"
 	"github.com/apenella/gitlabcli/pkg/command"
 	errors "github.com/apenella/go-common-utils/error"
 	"github.com/go-playground/validator/v10"
