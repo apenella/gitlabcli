@@ -20,7 +20,7 @@ func NewCloneCliHandler(s ports.GitCloneService, w io.Writer) (CloneCliHandler, 
 	}, nil
 }
 
-func (h CloneCliHandler) CloneProject(project string) error {
+func (h CloneCliHandler) CloneProject(projects ...string) error {
 
 	errContext := "clihandler::CloneProject"
 
@@ -28,9 +28,11 @@ func (h CloneCliHandler) CloneProject(project string) error {
 		return errors.New(errContext, "Handler service is not defined")
 	}
 
-	err := h.service.CloneProject(project)
-	if err != nil {
-		return errors.New(errContext, fmt.Sprintf("Project '%s' could not be cloned", project), err)
+	for _, project := range projects {
+		err := h.service.CloneProject(project)
+		if err != nil {
+			return errors.New(errContext, fmt.Sprintf("Project '%s' could not be cloned", project), err)
+		}
 	}
 
 	return nil

@@ -96,11 +96,9 @@ func clone(conf *configuration.Configuration, projects []string) error {
 		}
 	}
 
-	for _, project := range projects {
-		err = h.CloneProject(project)
-		if err != nil {
-			return errors.New(errContext, fmt.Sprintf("Error cloning '%s'", project), err)
-		}
+	err = h.CloneProject(projects...)
+	if err != nil {
+		return errors.New(errContext, "Clone could not be performed properly", err)
 	}
 
 	return nil
