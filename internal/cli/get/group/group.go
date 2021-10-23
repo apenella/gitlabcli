@@ -20,9 +20,10 @@ const PerPage = 100
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 
 	getGroupCmd := &cobra.Command{
-		Use:   "group [<group_name>]+",
-		Short: "Get group information from Gitlab",
-		Long:  `Set of utils to manage Gitlab repositories`,
+		Use:     "group [<group_name>]+",
+		Aliases: []string{"groups", "grp", "g"},
+		Short:   "Get group information from Gitlab",
+		Long:    `Set of utils to manage Gitlab repositories`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return getGroup(conf, args)
 		},
@@ -61,43 +62,10 @@ func getGroup(conf *configuration.Configuration, groups []string) error {
 		return errors.New(errContext, "Handler cli could not be created", err)
 	}
 
-	for _, group := range groups {
-		err = h.GetGroup(group)
-
-		if err != nil {
-			return errors.New(errContext, "Group detail could not be achieved", err)
-		}
+	err = h.GetGroup(groups...)
+	if err != nil {
+		return errors.New(errContext, "Group detail could not be achieved", err)
 	}
 
 	return nil
-}
-
-func RunEHandler(gitlab ports.GitlabGroupRepository, output ports.GitlabGroupOutputRepository) func(cmd *cobra.Command, args []string) error {
-	return func(cmd *cobra.Command, args []string) error {
-		var err error
-		var service getservice.GetGroupService
-		var h handler.GetGroupCliHandler
-
-		errContext := "getgroup::RunEHandler"
-
-		service, err = getservice.NewGetGroupService(gitlab)
-		if err != nil {
-			return errors.New(errContext, "Gitlab service could not be created", err)
-		}
-
-		h, err = handler.NewGetGroupCliHandler(service, output)
-		if err != nil {
-			return errors.New(errContext, "Handler cli could not be created", err)
-		}
-
-		for _, group := range args {
-			err = h.GetGroup(group)
-
-			if err != nil {
-				return errors.New(errContext, "Group detail could not be achieved", err)
-			}
-		}
-
-		return nil
-	}
 }

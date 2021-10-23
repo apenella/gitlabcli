@@ -22,9 +22,10 @@ const PerPage = 100
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 
 	getProjectsCmd := &cobra.Command{
-		Use:   "project [<project_name>]+",
-		Short: "Get project information from Gitlab",
-		Long:  `Set of utils to manage Gitlab repositories`,
+		Use:     "project [<project_name>]+",
+		Aliases: []string{"projects", "prj", "p"},
+		Short:   "Get project information from Gitlab",
+		Long:    `Set of utils to manage Gitlab repositories`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return getProject(conf, args)
 		},
@@ -65,41 +66,10 @@ func getProject(conf *configuration.Configuration, projects []string) error {
 		return errors.New(errContext, "Handler cli could not be created", err)
 	}
 
-	for _, project := range projects {
-		err = h.GetProject(project)
-		if err != nil {
-			return errors.New(errContext, "Project detail could not be achieved", err)
-		}
+	err = h.GetProject(projects...)
+	if err != nil {
+		return errors.New(errContext, "Project detail could not be achieved", err)
 	}
 
 	return nil
-}
-
-func RunEHandler(gitlab ports.GitlabProjectRepository, output ports.GitlabProjectOutputRepository) func(cmd *cobra.Command, args []string) error {
-	return func(cmd *cobra.Command, args []string) error {
-		var err error
-		var service getservice.GetProjectService
-		var h handler.GetProjectCliHandler
-
-		errContext := "getproject::RunEHandler"
-
-		service, err = getservice.NewGetProjectService(gitlab)
-		if err != nil {
-			return errors.New(errContext, "Gitlab service could not be created", err)
-		}
-
-		h, err = handler.NewGetProjectCliHandler(service, output)
-		if err != nil {
-			return errors.New(errContext, "Handler cli could not be created", err)
-		}
-
-		for _, project := range args {
-			err = h.GetProject(project)
-			if err != nil {
-				return errors.New(errContext, "Project detail could not be achieved", err)
-			}
-		}
-
-		return nil
-	}
 }
