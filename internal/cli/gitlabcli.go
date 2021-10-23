@@ -58,9 +58,6 @@ func NewCommand() (*command.AppCommand, error) {
 		listProjectsSubcommand,
 		listSubcommand,
 		versionSubcommand *command.AppCommand
-	// var gitlab gitlabrepo.GitlabRepository
-	// var outputGroup ports.GitlabGroupOutputRepository
-	// var outputProject ports.GitlabProjectOutputRepository
 
 	gitlabCmd := &cobra.Command{
 		Use:           "gitlabcli",
@@ -88,41 +85,6 @@ func NewCommand() (*command.AppCommand, error) {
 			if err != nil {
 				return errors.New(errContext, "Invalid configuration", err)
 			}
-
-			// gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
-			// if err != nil {
-			// 	return errors.New(errContext, "Gitlab repository could not be created", err)
-			// }
-
-			// outputGroup = groupoutputrepo.NewGroupOutputRepository(os.Stdout)
-			// outputProject = projectoutputrepo.NewProjectOutputRepository(os.Stdout)
-
-			// listGroupsSubcommand.Options(command.WithRunE(listgroup.RunEHandler(
-			// 	gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
-			// 	outputGroup,
-			// )))
-
-			// listProjectsSubcommand.Options(command.WithRunE(listproject.RunEHandler(
-			// 	gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
-			// 	gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
-			// 	outputProject,
-			// )))
-
-			// getGroupSubcommand.Options(command.WithRunE(getgroup.RunEHandler(
-			// 	gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
-			// 	outputGroup,
-			// )))
-
-			// getProjectSubcommand.Options(command.WithRunE(getproject.RunEHandler(
-			// 	gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
-			// 	outputProject,
-			// )))
-
-			// cloneSubcommand.Options(
-			// 	command.WithRunE(clone.RunEHandler(
-			// 		gitlabprojectrepo.NewGitlabProjectRepository(gitlab.Client.Projects, PerPage),
-			// 		gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage),
-			// 		conf.WorkingDir)))
 
 			return nil
 		},
