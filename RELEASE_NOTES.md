@@ -7,3 +7,6 @@
 ### Changed
 - Move repositories creation from PersistentPreRun to each command
 - PresistentPreRun on root command only creates the configuration
+- handler clone allow to clone multiple projectes
+- handler get group allow to get details for multiple groups
+- handler get project allow to get details for multiple projects
