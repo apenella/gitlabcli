@@ -18,16 +18,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PerPage number of items to return on each Gitlab API page
 const PerPage = 100
 
 var cloneAll bool
 var groupName string
+var workingDir string
 
-//var dir, group string
-
+// NewCommand creates a clone command
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	cloneCmd := &cobra.Command{
-		Use:   "clone",
+		Use:   "clone [project_name]",
 		Short: "Clone repositories from Gitlab to localhost",
 		Long:  `Clone repositories from Gitlab to localhost`,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -36,7 +37,8 @@ func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	}
 
 	cloneCmd.Flags().BoolVar(&cloneAll, "all", false, "Clone all projects from all groups")
-	cloneCmd.Flags().StringVarP(&groupName, "group", "g", "", "Group which its projects have to be cloned")
+	cloneCmd.Flags().StringVarP(&groupName, "group", "g", "", "Gitlab group whose projects will be cloned")
+	cloneCmd.Flags().StringVarP(&workingDir, "working-dir", "d", "", "Directory base path where projects are cloned to")
 
 	return command.NewCommand(cloneCmd)
 }
@@ -65,13 +67,17 @@ func clone(conf *configuration.Configuration, projects []string) error {
 		return errors.New(errContext, "Git repository could not be created", err)
 	}
 
+	if workingDir == "" {
+		workingDir = conf.WorkingDir
+	}
+
 	service, err = cloneservice.NewCloneService(
 		project,
 		group,
 		git,
 		storage,
 		cloneservice.WithUseNamespacePath(),
-		cloneservice.WithBasePath(conf.WorkingDir),
+		cloneservice.WithBasePath(workingDir),
 	)
 	if err != nil {
 		return errors.New(errContext, "Clone service could not be created", err)
