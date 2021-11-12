@@ -14,7 +14,7 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
   - [Comming updates, new features or ideas](#comming-updates-new-features-or-ideas)
   - [License](#license)
 
-> **Disclaimer**: Gitlabcli has only been tested on Linux systems
+> **Disclaimer**: gitlabcli has only been tested on Linux systems
 
 ## Getting started
 
@@ -23,7 +23,7 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
 #### Installation from tarball
 - Download `gitlabcli` tarball from github releases
 ```sh
-$ curl -sLO https://github.com/apenella/gitlabcli/releases/download/v0.2.0/gitlabcli_0.2.0_Linux-x86_64.tar.gz
+$ curl -sLO https://github.com/apenella/gitlabcli/releases/download/v0.3.0/gitlabcli_0.3.0_Linux-x86_64.tar.gz
 ```
 
 - Untar `gitlabcli` package
@@ -62,7 +62,7 @@ By default, configuration file location is `~/.config/gitlabcli/config.yml` but 
 
 You could run the `initialize` subcommand to initialize `gitlabcli`. That command takes care to initialize the configuration parameters properly.
 ```sh
-$ gitlabcli initialize --base-url https://mygitlab.com/api/v4 --working-dir /projects
+$ gitlabcli initialize --gitlab-api-url https://mygitlab.com/api/v4 --working-dir /projects
 ```
 
 #### Environment variables
