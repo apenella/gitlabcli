@@ -6,6 +6,7 @@ require (
 	github.com/Microsoft/go-winio v0.5.1 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20210920160938-87db9fbc61c7 // indirect
 	github.com/apenella/go-common-utils/error v0.0.0-20210528133155-34ba915e28c8
+	github.com/fatih/color v1.9.0
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.9.0
