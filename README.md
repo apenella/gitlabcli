@@ -72,14 +72,14 @@ $ gitlabcli initialize --base-url https://mygitlab.com/api/v4 --working-dir /pro
 
 | Parameter  | Type  | Description |
 |---|---|---|
-| **base_url** | string | Base URL for API requests |
+| **gitlab_api_url** | string | Gitlab API URL base. Check it on [Gitlab documentation](https://docs.gitlab.com/ee/api/#how-to-use-the-api) |
 | **gitlab_token** | string | Token to authenticate to Gitlab API |
 | **working_dir** | string | Location to store cloned projects |
 
 
 Example:
 ```yaml
-base_url: https://mygitlab.com/api/v4
+gitlab_api_url: https://mygitlab.com/api/v4
 gitlab_token: ThatIsAGitlabToken
 working_dir: /projects
 ```
