@@ -14,6 +14,7 @@ import (
 	"github.com/tcnksm/go-input"
 )
 
+// NewCommand creates a initialize command
 func NewCommand(viperconfig *viper.Viper) *command.AppCommand {
 	var baseURL, workingDir, token, configFile string
 	var force bool
@@ -100,8 +101,8 @@ func NewCommand(viperconfig *viper.Viper) *command.AppCommand {
 	}
 
 	initCmd.PersistentFlags().StringVar(&configFile, "config", "", "Configuration file")
-	initCmd.Flags().StringVarP(&baseURL, "base-url", "u", "", "Gitlab base URL")
-	initCmd.Flags().StringVarP(&workingDir, "working-dir", "w", "", "Location to store cloned gitlabcli repositories")
+	initCmd.Flags().StringVarP(&baseURL, "gitlab-api-url", "u", "", "Gitlab API URL base. Check it on https://docs.gitlab.com/ee/api/#how-to-use-the-api")
+	initCmd.Flags().StringVarP(&workingDir, "working-dir", "d", "", "Location to store cloned gitlabcli repositories")
 	initCmd.Flags().BoolVar(&force, "force", false, "Force ot override current configuration")
 
 	return command.NewCommand(initCmd)
