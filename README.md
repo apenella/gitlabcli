@@ -28,7 +28,7 @@ $ curl -sLO https://github.com/apenella/gitlabcli/releases/download/v0.3.0/gitla
 
 - Untar `gitlabcli` package
 ```sh
-$ tar xzfv gitlabcli_0.2.0_Linux-x86_64.tar.gz
+$ tar xzfv gitlabcli_0.3.0_Linux-x86_64.tar.gz
 ```
 
 - Start using `gitlabcli`
