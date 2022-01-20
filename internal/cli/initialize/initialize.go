@@ -92,7 +92,7 @@ func NewCommand(viperconfig *viper.Viper) *command.AppCommand {
 
 			err = saver.Save(viperconfig, afero.NewOsFs(), conf, configFile)
 			if err != nil {
-				return errors.New(errContext, "Configuration could be saved", err)
+				return errors.New(errContext, "Configuration could no be saved", err)
 			}
 
 			return nil

@@ -13,4 +13,5 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/tcnksm/go-input v0.0.0-20180404061846-548a7d7a8ee8
 	github.com/xanzy/go-gitlab v0.50.1
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
