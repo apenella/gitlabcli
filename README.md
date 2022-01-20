@@ -23,12 +23,12 @@ Gitlabcli is a command line tool to interactuate with Gitlab repository
 #### Installation from tarball
 - Download `gitlabcli` tarball from github releases
 ```sh
-$ curl -sLO https://github.com/apenella/gitlabcli/releases/download/v0.3.0/gitlabcli_0.3.0_Linux-x86_64.tar.gz
+$ curl -sLO https://github.com/apenella/gitlabcli/releases/download/v0.3.1/gitlabcli_0.3.1_Linux-x86_64.tar.gz
 ```
 
 - Untar `gitlabcli` package
 ```sh
-$ tar xzfv gitlabcli_0.3.0_Linux-x86_64.tar.gz
+$ tar xzfv gitlabcli_0.3.1_Linux-x86_64.tar.gz
 ```
 
 - Start using `gitlabcli`
