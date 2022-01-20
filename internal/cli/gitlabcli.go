@@ -2,6 +2,7 @@ package gitlabcli
 
 import (
 	"fmt"
+	"os"
 	"os/user"
 	"path/filepath"
 
@@ -35,12 +36,19 @@ func init() {
 		panic(fmt.Sprintf("current user information can not be achieved. %s\n", err.Error()))
 	}
 
+	configPath := filepath.Join(user.HomeDir, ".config", "gitlabcli")
+
+	err = os.MkdirAll(configPath, 0755)
+	if err != nil {
+		panic(fmt.Sprintf("configuration directory can not be created. %s\n", err.Error()))
+	}
+
 	viperconfig = viper.New()
 	viperconfig.AutomaticEnv()
 	viperconfig.SetEnvPrefix("gitlabcli")
 	viperconfig.SetConfigName(DefaultConfigFile)
 	viperconfig.SetConfigType("yaml")
-	viperconfig.AddConfigPath(filepath.Join(user.HomeDir, ".config", "gitlabcli"))
+	viperconfig.AddConfigPath(configPath)
 }
 
 var configFile string

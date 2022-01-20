@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [v0.3.1]
+### Fixed
+- Ensure configuration folder is created to avoid a non existing directory error on initialize command
+
 ## [v0.3.0]
 ### Added
 - On clone subcommand, added a flag to set the working directory
