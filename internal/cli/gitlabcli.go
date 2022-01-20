@@ -25,9 +25,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+// DefaultConfigFile is the default configuration file name
 const DefaultConfigFile = "config"
-
-const PerPage = 100
 
 var viperconfig *viper.Viper
 
@@ -54,6 +53,7 @@ func init() {
 
 var configFile string
 
+// NewCommand creates a gitlabcli command
 func NewCommand() (*command.AppCommand, error) {
 	var err error
 	var conf configuration.Configuration
@@ -87,6 +87,8 @@ func NewCommand() (*command.AppCommand, error) {
 			if err != nil {
 				return errors.New(errContext, "Configuration could not be unmarshaled", err)
 			}
+
+			conf.FixCompatibility()
 
 			v := validator.New()
 			err = conf.Validate(v)
