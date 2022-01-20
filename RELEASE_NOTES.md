@@ -1,7 +1,5 @@
 # RELEASE NOTES
 
-## [v0.3.0]
-### Added
-- On clone subcommand, added a flag to set the working directory
-- `base_url` configuration attribute has been renamed to `gitlab_api_url`
-- on `initialize` command `base-url` flag has been renamed to `gitlab-api-url`
+## [v0.3.1]
+### Fixed
+- Ensure configuration folder is created to avoid a non existing directory error on initialize command
