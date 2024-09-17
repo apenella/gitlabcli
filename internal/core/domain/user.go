@@ -1,6 +1,3 @@
 package domain
 
-type User struct {
-	token string
-	// SSHAuth
-}
+type User struct{}
