@@ -38,7 +38,7 @@ func init() {
 
 	configPath := filepath.Join(user.HomeDir, ".config", "gitlabcli")
 
-	err = os.MkdirAll(configPath, 0755)
+	err = os.MkdirAll(configPath, 0750)
 	if err != nil {
 		panic(fmt.Sprintf("configuration directory can not be created. %s\n", err.Error()))
 	}
