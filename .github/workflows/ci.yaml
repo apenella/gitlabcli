@@ -1,0 +1,32 @@
+---
+
+    name: CI
+    on:
+      push:
+        branches:
+        - main
+      pull_request:
+        branches:
+        - main
+    
+    jobs:    
+      static-analysis:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+          - name: Execute go vet
+            run: |
+              make vet
+
+          - name: Execute gosec
+            run: |
+              make gosec
+
+          - name: Execute staticcheck
+            run: |
+              make staticcheck
+
+        #   - name: Execute errcheck
+        #     run: |
+        #       make errcheck
