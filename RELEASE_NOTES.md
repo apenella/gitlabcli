@@ -1,5 +1,12 @@
 # RELEASE NOTES
 
-## [v0.3.1]
-### Fixed
-- Ensure configuration folder is created to avoid a non existing directory error on initialize command
+## [Unreleased]
+
+### Added
+
+- Include the staticcheck tool
+
+### Changed
+
+- Upgrade to Golang 1.23
+- Adapt souce code to make it complaiant to golint, gosec and staticcheck
