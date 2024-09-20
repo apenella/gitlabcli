@@ -13,32 +13,38 @@ COLOR_END=\033[0m
 help: ## Lists available targets
 	@echo
 	@echo "Makefile usage:"
-	@grep -E '^[a-zA-Z1-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[1;32m%-20s\033[0m %s\n", $$1, $$2}' | sort
+	@grep -E '^[a-zA-Z1-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[1;32m%-25s\033[0m %s\n", $$1, $$2}' | sort
 	@echo
 
 ## Execute static analysis
-static-analysis: vet golint staticcheck
+static-analysis: vet linter staticcheck gosec
 
-vet: ## Executes the go vet
+ci-go-tools-docker-image: ## Build the docker image
 	@echo
-	@echo "$(COLOR_GREEN) Executing go vet $(COLOR_END)"
+	@echo "$(COLOR_BLUE) Building the docker image $(COLOR_END)"
 	@echo
-	@$(DOCKER_COMPOSE_BINARY) --project-name gitlabcli-go-vet run --rm --build --entrypoint go ci vet $(LDFLAGS) ./...; $(DOCKER_COMPOSE_BINARY) --project-name gitlabcli-go-vet down --volumes --remove-orphans --timeout 3
+	@docker build -t ci-go-tools-docker-image -f build/Dockerfile .
 
-golint: ## Executes golint
+vet: ci-go-tools-docker-image ## Executes the go vet
 	@echo
-	@echo "$(COLOR_GREEN) Executing golint$(COLOR_END)"
+	@echo "$(COLOR_BLUE) Executing go vet $(COLOR_END)"
 	@echo
-	@$(DOCKER_COMPOSE_BINARY) --project-name gitlabcli-golint run --rm --build ci golint ./internal/...; $(DOCKER_COMPOSE_BINARY) --project-name gitlabcli-golint down --volumes --remove-orphans --timeout 3
+	@docker run --rm -v "${PWD}":/app -w /app ci-go-tools-docker-image go vet ./internal/... && echo "$(COLOR_GREEN) go vet: all files linted$(COLOR_END)" || echo "$(COLOR_RED)go vet: some files not linted$(COLOR_END)"
 
-staticcheck: ## Executes staticcheck
+linter: ci-go-tools-docker-image ## Executes Go linter (golint)
 	@echo
-	@echo "$(COLOR_GREEN) Executing staticcheck$(COLOR_END)"
+	@echo "$(COLOR_BLUE) Executing golint$(COLOR_END)"
 	@echo
-	@$(DOCKER_COMPOSE_BINARY) --project-name gitlabcli-staticcheck run --rm --build ci staticcheck ./internal/...; $(DOCKER_COMPOSE_BINARY) --project-name gitlabcli-staticcheck down --volumes --remove-orphans --timeout 3
+	@docker run --rm -v "${PWD}":/app -w /app ci-go-tools-docker-image golint ./internal/... && echo "$(COLOR_GREEN) golint: all files linted$(COLOR_END)" || echo "$(COLOR_RED)golint: some files not linted$(COLOR_END)"
+
+staticcheck: ci-go-tools-docker-image ## Executes staticcheck
+	@echo
+	@echo "$(COLOR_BLUE) Executing staticcheck$(COLOR_END)"
+	@echo
+	@docker run --rm -v "${PWD}":/app -w /app ci-go-tools-docker-image staticcheck ./internal/... && echo "$(COLOR_GREEN) staticcheck: all files linted$(COLOR_END)" || echo "$(COLOR_RED)staticcheck: some files not linted$(COLOR_END)"
 
 gosec:
 	@echo
-	@echo "$(COLOR_GREEN) Executing gosec$(COLOR_END)"
+	@echo "$(COLOR_BLUE) Executing gosec$(COLOR_END)"
 	@echo
-	@docker run --rm -it -w /app -v "${PWD}":/app securego/gosec /app/...
+	@docker run --rm -w /app -v "${PWD}":/app securego/gosec /app/... && echo "$(COLOR_GREEN) gosec: no issues found$(COLOR_END)" || echo "$(COLOR_RED)gosec: some issues found$(COLOR_END)"
