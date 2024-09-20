@@ -8,11 +8,13 @@ import (
 	errors "github.com/apenella/go-common-utils/error"
 )
 
+// GetProjectCliHandler handles get project command
 type GetProjectCliHandler struct {
 	writer  ports.GitlabProjectOutputRepository
 	service ports.GetProjectService
 }
 
+// NewGetProjectCliHandler returns a new GetProjectCliHandler
 func NewGetProjectCliHandler(s ports.GetProjectService, w ports.GitlabProjectOutputRepository) (GetProjectCliHandler, error) {
 	return GetProjectCliHandler{
 		service: s,
@@ -20,6 +22,7 @@ func NewGetProjectCliHandler(s ports.GetProjectService, w ports.GitlabProjectOut
 	}, nil
 }
 
+// GetProject handles command to get a project
 func (h GetProjectCliHandler) GetProject(projects ...string) error {
 
 	errContext := "clihandler::GetProject"

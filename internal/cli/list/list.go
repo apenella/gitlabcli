@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewCommand creates a list command
 func NewCommand() *command.AppCommand {
 	getCmd := &cobra.Command{
 		Use:   "list",

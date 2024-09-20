@@ -16,10 +16,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PerPage number of items to return on each Gitlab API page
 const PerPage = 100
 
 var groupName string
 
+// NewCommand creates a get project command
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 
 	getProjectsCmd := &cobra.Command{
@@ -37,6 +39,7 @@ func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	return command.NewCommand(getProjectsCmd)
 }
 
+// listProjects function is responsible to list project information from Gitlab
 func listProjects(conf *configuration.Configuration) error {
 	var gitlab gitlabrepo.GitlabRepository
 	var err error
@@ -48,7 +51,7 @@ func listProjects(conf *configuration.Configuration) error {
 
 	errContext := "listproject::listProjects"
 
-	output = projectoutputrepo.NewProjectOutputRepository(os.Stdout)
+	output = projectoutputrepo.NewOutputRepository(os.Stdout)
 
 	gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 	if err != nil {

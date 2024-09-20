@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewCommand creates a version command
 func NewCommand() *command.AppCommand {
 	getCmd := &cobra.Command{
 		Use:               "version",
@@ -18,7 +19,7 @@ func NewCommand() *command.AppCommand {
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			r := release.NewRelease(runtime.GOOS, runtime.GOARCH)
-			o := release.NewReleaseOutput(os.Stdout)
+			o := release.NewOutput(os.Stdout)
 			err := o.Text(r)
 			if err != nil {
 				return err

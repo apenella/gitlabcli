@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/apenella/gitlabcli/internal/configuration"
-	cloneservice "github.com/apenella/gitlabcli/internal/core/services/clone"
+	service "github.com/apenella/gitlabcli/internal/core/services/clone"
 	handler "github.com/apenella/gitlabcli/internal/handlers/cli/clone"
 	gitrepo "github.com/apenella/gitlabcli/internal/repositories/git"
 	gitlabrepo "github.com/apenella/gitlabcli/internal/repositories/gitlab"
@@ -43,11 +43,12 @@ func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	return command.NewCommand(cloneCmd)
 }
 
+// clone functions is responsible to choose the clone strategy to be used: clone all projects, clone projects from a group or clone a list of projects
 func clone(conf *configuration.Configuration, projects []string) error {
 	var err error
 	var gitlab gitlabrepo.GitlabRepository
-	var git gitrepo.GitRepository
-	var service cloneservice.CloneService
+	var git *gitrepo.Repository
+	var cloneService service.Service
 	var storage storagerepo.ProjectStorage
 	var h handler.CloneCliHandler
 
@@ -62,28 +63,25 @@ func clone(conf *configuration.Configuration, projects []string) error {
 	group := gitlabgrouprepo.NewGitlabGroupRepository(gitlab.Client.Groups, PerPage)
 	storage = storagerepo.New(afero.NewOsFs())
 
-	git, err = gitrepo.NewGitRepository()
-	if err != nil {
-		return errors.New(errContext, "Git repository could not be created", err)
-	}
+	git = gitrepo.NewRepository()
 
 	if workingDir == "" {
 		workingDir = conf.WorkingDir
 	}
 
-	service, err = cloneservice.NewCloneService(
+	cloneService, err = service.NewService(
 		project,
 		group,
 		git,
 		storage,
-		cloneservice.WithUseNamespacePath(),
-		cloneservice.WithBasePath(workingDir),
+		service.WithUseNamespacePath(),
+		service.WithBasePath(workingDir),
 	)
 	if err != nil {
 		return errors.New(errContext, "Clone service could not be created", err)
 	}
 
-	h, err = handler.NewCloneCliHandler(service, os.Stdout)
+	h, err = handler.NewCloneCliHandler(cloneService, os.Stdout)
 	if err != nil {
 		return errors.New(errContext, "Handler cli could not be created", err)
 	}

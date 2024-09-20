@@ -5,15 +5,18 @@ import (
 	"github.com/xanzy/go-gitlab"
 )
 
+// GitlabProjectLister interface
 type GitlabProjectLister interface {
 	ListProjects(opt *gitlab.ListProjectsOptions, options ...gitlab.RequestOptionFunc) ([]*gitlab.Project, *gitlab.Response, error)
 }
 
+// GitlabProjectRepository struct allows to interact with gitlab projects
 type GitlabProjectRepository struct {
 	perPage int
 	project GitlabProjectLister
 }
 
+// NewGitlabProjectRepository returns a new GitlabProjectRepository
 func NewGitlabProjectRepository(project GitlabProjectLister, perPage int) *GitlabProjectRepository {
 	return &GitlabProjectRepository{
 		perPage: perPage,
@@ -21,6 +24,7 @@ func NewGitlabProjectRepository(project GitlabProjectLister, perPage int) *Gitla
 	}
 }
 
+// Find returns a project by name
 func (g GitlabProjectRepository) Find(name string) ([]domain.Project, error) {
 	projects := []domain.Project{}
 
@@ -55,6 +59,7 @@ func (g GitlabProjectRepository) Find(name string) ([]domain.Project, error) {
 	return projects, nil
 }
 
+// List returns a list of projects
 func (g GitlabProjectRepository) List() ([]domain.Project, error) {
 	projects := []domain.Project{}
 
@@ -85,6 +90,7 @@ func (g GitlabProjectRepository) List() ([]domain.Project, error) {
 	return projects, nil
 }
 
+// list returns a list of projects
 func (g GitlabProjectRepository) list(options *gitlab.ListProjectsOptions, list []*gitlab.Project) ([]*gitlab.Project, error) {
 
 	localList, _, err := g.project.ListProjects(options)
@@ -96,8 +102,9 @@ func (g GitlabProjectRepository) list(options *gitlab.ListProjectsOptions, list 
 
 	if len(localList) < g.perPage {
 		return list, nil
-	} else {
-		options.ListOptions.Page++
-		return g.list(options, list)
 	}
+
+	options.ListOptions.Page++
+	return g.list(options, list)
+
 }

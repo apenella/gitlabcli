@@ -17,8 +17,10 @@ import (
 
 var project string
 
+// PerPage number of items to return on each Gitlab API page
 const PerPage = 100
 
+// NewCommand creates a get project command
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 
 	getProjectsCmd := &cobra.Command{
@@ -37,6 +39,7 @@ func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	return command.NewCommand(getProjectsCmd)
 }
 
+// getProject function is responsible to get project information from Gitlab
 func getProject(conf *configuration.Configuration, projects []string) error {
 
 	var gitlab gitlabrepo.GitlabRepository
@@ -47,7 +50,7 @@ func getProject(conf *configuration.Configuration, projects []string) error {
 
 	errContext := "getproject::getProject"
 
-	output = projectoutputrepo.NewProjectOutputRepository(os.Stdout)
+	output = projectoutputrepo.NewOutputRepository(os.Stdout)
 
 	gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 	if err != nil {

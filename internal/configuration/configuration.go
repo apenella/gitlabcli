@@ -5,8 +5,11 @@ import (
 )
 
 const (
-	BaseURLKey    = "gitlab_api_url"
-	TokenKey      = "gitlab_token"
+	// BaseURLKey is the key used to store the Gitlab server url
+	BaseURLKey = "gitlab_api_url"
+	// TokenKey is the key used to store the token to authenticate
+	TokenKey = "gitlab_token"
+	// WorkingDirKey is the key used to store the working directory
 	WorkingDirKey = "working_dir"
 )
 
@@ -18,7 +21,7 @@ type ConfigValidator interface {
 // Configuration for gitlabcli
 type Configuration struct {
 	// DEPRECATED_BaseURL
-	DEPRECATED_BaseURL string `mapstructure:"base_url"`
+	DEPRECATEDBaseURL string `mapstructure:"base_url"`
 	// Gitlab server url
 	BaseURL string `mapstructure:"gitlab_api_url" validate:"required,url"`
 	// Token to authenticate
@@ -47,10 +50,10 @@ func (c *Configuration) ToMap() map[string]interface{} {
 
 // FixCompatibility prepares configuration to valid attributes instead of deprecated ones
 func (c *Configuration) FixCompatibility() {
-	if c.DEPRECATED_BaseURL != "" {
+	if c.DEPRECATEDBaseURL != "" {
 		color.Cyan("[DEPRECATED] Use 'gitlab_api_url' configuration parameter instead of 'base_url'")
 		if c.BaseURL == "" {
-			c.BaseURL = c.DEPRECATED_BaseURL
+			c.BaseURL = c.DEPRECATEDBaseURL
 		}
 	}
 }

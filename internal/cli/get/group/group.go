@@ -15,8 +15,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PerPage number of items to return on each Gitlab API page
 const PerPage = 100
 
+// NewCommand creates a get group command
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 
 	getGroupCmd := &cobra.Command{
@@ -33,6 +35,7 @@ func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	return command.NewCommand(getGroupCmd)
 }
 
+// getGroup function is responsible to get group information from Gitlab
 func getGroup(conf *configuration.Configuration, groups []string) error {
 
 	var err error
@@ -43,7 +46,7 @@ func getGroup(conf *configuration.Configuration, groups []string) error {
 
 	errContext := "getgroup::getGroup"
 
-	output = groupoutputrepo.NewGroupOutputRepository(os.Stdout)
+	output = groupoutputrepo.NewOutputRepository(os.Stdout)
 
 	gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 	if err != nil {

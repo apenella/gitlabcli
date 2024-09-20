@@ -5,11 +5,13 @@ import (
 	errors "github.com/apenella/go-common-utils/error"
 )
 
+// ListProjectCliHandler handles list project command
 type ListProjectCliHandler struct {
 	writer  ports.GitlabProjectOutputRepository
 	service ports.ListProjectService
 }
 
+// NewListProjectCliHandler returns a new ListProjectCliHandler
 func NewListProjectCliHandler(s ports.ListProjectService, w ports.GitlabProjectOutputRepository) (ListProjectCliHandler, error) {
 	return ListProjectCliHandler{
 		service: s,
@@ -17,6 +19,7 @@ func NewListProjectCliHandler(s ports.ListProjectService, w ports.GitlabProjectO
 	}, nil
 }
 
+// ListProjects handles command to list projects
 func (h ListProjectCliHandler) ListProjects() error {
 
 	errContext := "clihandler::ListProjects"

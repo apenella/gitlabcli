@@ -8,23 +8,27 @@ import (
 	"github.com/ryanuber/columnize"
 )
 
-type GroupOutputRepository struct {
+// OutputRepository is responsible to output group information
+type OutputRepository struct {
 	w io.Writer
 }
 
-func NewGroupOutputRepository(w io.Writer) GroupOutputRepository {
-	return GroupOutputRepository{w}
+// NewOutputRepository returns a new OutputRepository
+func NewOutputRepository(w io.Writer) *OutputRepository {
+	return &OutputRepository{w}
 }
 
-func (o GroupOutputRepository) Text(g domain.Group) {
+// Text writes a group information in text format
+func (o *OutputRepository) Text(g domain.Group) {
 	fmt.Fprintln(o.w, g)
 }
 
-func (o GroupOutputRepository) Table(groups []domain.Group) {
+// Table writes a group information in table format
+func (o *OutputRepository) Table(groups []domain.Group) {
 	output := []string{"Id|Group|Description|Path|Web Url"}
 
 	for _, g := range groups {
-		output = append(output, fmt.Sprintf("%d|%s|%s|%s|%s", g.Id, g.Name, g.Description, g.Path, g.WebUrl))
+		output = append(output, fmt.Sprintf("%d|%s|%s|%s|%s", g.ID, g.Name, g.Description, g.Path, g.WebURL))
 	}
 
 	result := columnize.SimpleFormat(output)

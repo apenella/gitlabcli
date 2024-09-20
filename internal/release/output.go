@@ -14,17 +14,20 @@ const (
 	versionTmpl = `gitlabcli {{ .Version }} Commit: {{ .Commit }} {{ .OsArch }} BuildDate: {{ .BuildDate }}`
 )
 
-type ReleaseOutput struct {
+// Output represents the output for a release
+type Output struct {
 	Writer io.Writer
 }
 
-func NewReleaseOutput(w io.Writer) ReleaseOutput {
-	return ReleaseOutput{
+// NewOutput returns a new Output
+func NewOutput(w io.Writer) *Output {
+	return &Output{
 		Writer: w,
 	}
 }
 
-func (v ReleaseOutput) Text(r *Release) error {
+// Text writes a release information in text format
+func (v *Output) Text(r *Release) error {
 	errContext := "release::Text"
 
 	var w bytes.Buffer

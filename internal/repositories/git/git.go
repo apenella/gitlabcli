@@ -7,23 +7,27 @@ import (
 	"github.com/go-git/go-git/v5"
 )
 
-type OptionsFunc func(*GitRepository)
+// OptionsFunc to set options to GitRepository
+type OptionsFunc func(*Repository)
 
-type GitRepository struct {
+// Repository is a struct to manage git operations
+type Repository struct {
 	//Auth
 }
 
-func NewGitRepository(opts ...OptionsFunc) (GitRepository, error) {
-	g := &GitRepository{}
+// NewRepository returns a new Repository
+func NewRepository(opts ...OptionsFunc) *Repository {
+	g := &Repository{}
 
 	for _, opt := range opts {
 		opt(g)
 	}
 
-	return *g, nil
+	return g
 }
 
-func (g GitRepository) Clone(directory, url string) error {
+// Clone clones a git repository
+func (g *Repository) Clone(directory, url string) error {
 	var err error
 
 	errContext := "git::Clone"
