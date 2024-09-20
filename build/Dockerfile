@@ -22,3 +22,9 @@ RUN go install golang.org/x/lint/golint@${GO_TOOL_GOLINT_VERSION}
 
 # Install staticcheck
 RUN go install honnef.co/go/tools/cmd/staticcheck@${GO_TOOL_STATICCHECK_VERSION}
+
+# Install golangci-lint
+RUN go install github.com/golangci/golangci-lint/cmd/golangci-lint@${GO_TOOL_GOLANGCI_LINT_VERSION}
+
+# Install gosec
+RUN go install github.com/securego/gosec/cmd/gosec@${GO_TOOL_GOSEC_VERSION}

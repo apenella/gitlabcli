@@ -23,10 +23,14 @@
             run: |
               make gosec
 
+          - name: Execute linter
+            run: |
+              make lint
+
           - name: Execute staticcheck
             run: |
               make staticcheck
 
         #   - name: Execute errcheck
         #     run: |
-        #       make errcheck
+        #       make errcheckk
