@@ -5,8 +5,7 @@ before:
   hooks:
     # You may remove this if you don't use go modules.
     - go mod download
-    # you may remove this if you don't need go generate
-    # - go generate ./...
+    - go mod tidy
 builds:
   - id: gitlabcli
     binary: gitlabcli
@@ -26,15 +25,17 @@ archives:
     builds:
       - gitlabcli
     format: tar.gz
-    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      amd64: x86_64
+    name_template: >-
+      {{ .ProjectName }}_{{.Version}}_
+      {{- if eq .Os "linux" }}Linux
+      {{- else if eq .Os "darwin" }}Darwin
+      {{- else }}{{ .Os }}{{ end }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else }}{{ .Arch }}{{ end }}
 
 checksum:
   name_template: '{{.ProjectName}}_{{.Version}}_checksums.txt'
 snapshot:
   name_template: '{{.ProjectName}}_{{ .Version }}'
 changelog:
-  skip: false
+  disable: true

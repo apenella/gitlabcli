@@ -1,6 +1,6 @@
 # RELEASE NOTES
 
-## [Unreleased]
+## [v0.3.2]
 
 ### Added
 
