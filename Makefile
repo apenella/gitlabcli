@@ -17,7 +17,7 @@ help: ## Lists available targets
 	@echo
 
 ## Execute static analysis
-static-analysis: vet linter staticcheck gosec
+static-analysis: vet linter staticcheck errcheck gosec
 
 ci-go-tools-docker-image: ## Build the docker image
 	@echo
@@ -43,7 +43,14 @@ staticcheck: ci-go-tools-docker-image ## Executes staticcheck
 	@echo
 	@docker run --rm -v "${PWD}":/app -w /app ci-go-tools-docker-image staticcheck ./internal/... && echo "$(COLOR_GREEN) staticcheck: all files linted$(COLOR_END)" || echo "$(COLOR_RED)staticcheck: some files not linted$(COLOR_END)"
 
-gosec:
+
+errcheck: ci-go-tools-docker-image ## Executes errcheck
+	@echo
+	@echo "$(COLOR_BLUE) Executing errcheck$(COLOR_END)"
+	@echo
+	@docker run --rm -v "${PWD}":/app -w /app ci-go-tools-docker-image errcheck -ignoretests -ignorepkg fmt ./internal/... && echo "$(COLOR_GREEN) errcheck: all files linted$(COLOR_END)" || echo "$(COLOR_RED)errcheck: some files not linted$(COLOR_END)"
+
+gosec: ## Executes gosec
 	@echo
 	@echo "$(COLOR_BLUE) Executing gosec$(COLOR_END)"
 	@echo
