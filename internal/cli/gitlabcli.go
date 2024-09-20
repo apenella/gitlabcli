@@ -30,6 +30,7 @@ const DefaultConfigFile = "config"
 
 var viperconfig *viper.Viper
 
+// init function is responsible to initialize the configuration file
 func init() {
 	user, err := user.Current()
 	if err != nil {
@@ -118,18 +119,21 @@ func NewCommand() (*command.AppCommand, error) {
 
 	getSubcommand.AddCommands(
 		getGroupSubcommand,
-		getProjectSubcommand)
+		getProjectSubcommand,
+	)
 
 	listSubcommand.AddCommands(
 		listGroupsSubcommand,
-		listProjectsSubcommand)
+		listProjectsSubcommand,
+	)
 
 	gitlabCommand.AddCommands(
 		getSubcommand,
 		initSubcommand,
 		listSubcommand,
 		cloneSubcommand,
-		versionSubcommand)
+		versionSubcommand,
+	)
 
 	return gitlabCommand, nil
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewCommand creates a get command
 func NewCommand() *command.AppCommand {
 	getCmd := &cobra.Command{
 		Use:   "get",

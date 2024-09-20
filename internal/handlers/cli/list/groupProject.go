@@ -7,11 +7,13 @@ import (
 	errors "github.com/apenella/go-common-utils/error"
 )
 
+// ListGroupProjectCliHandler handles list group project command
 type ListGroupProjectCliHandler struct {
 	writer  ports.GitlabProjectOutputRepository
 	service ports.ListGroupService
 }
 
+// NewListGroupProjectCliHandler returns a new ListGroupProjectCliHandler
 func NewListGroupProjectCliHandler(s ports.ListGroupService, w ports.GitlabProjectOutputRepository) (ListGroupProjectCliHandler, error) {
 	return ListGroupProjectCliHandler{
 		service: s,
@@ -19,6 +21,7 @@ func NewListGroupProjectCliHandler(s ports.ListGroupService, w ports.GitlabProje
 	}, nil
 }
 
+// ListProjectsFromGroup handles command to list projects from a group
 func (h ListGroupProjectCliHandler) ListProjectsFromGroup(group string) error {
 
 	errContext := "clihandler::ListProjectsFromGroup"

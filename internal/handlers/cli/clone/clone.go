@@ -8,11 +8,13 @@ import (
 	errors "github.com/apenella/go-common-utils/error"
 )
 
+// CloneCliHandler handles clone project command
 type CloneCliHandler struct {
 	writer  io.Writer
 	service ports.GitCloneService
 }
 
+// NewCloneCliHandler returns a new CloneCliHandler
 func NewCloneCliHandler(s ports.GitCloneService, w io.Writer) (CloneCliHandler, error) {
 	return CloneCliHandler{
 		service: s,
@@ -20,6 +22,7 @@ func NewCloneCliHandler(s ports.GitCloneService, w io.Writer) (CloneCliHandler, 
 	}, nil
 }
 
+// CloneProject handles command to clone of a project
 func (h CloneCliHandler) CloneProject(projects ...string) error {
 
 	errContext := "clihandler::CloneProject"
@@ -38,6 +41,7 @@ func (h CloneCliHandler) CloneProject(projects ...string) error {
 	return nil
 }
 
+// CloneProjectFromGroup handles command to clone of all projects from a group
 func (h CloneCliHandler) CloneProjectFromGroup(group string) error {
 
 	errContext := "clihandler::CloneProjectFromGroup"
@@ -54,6 +58,7 @@ func (h CloneCliHandler) CloneProjectFromGroup(group string) error {
 	return nil
 }
 
+// CloneAll handles command to clone of all projects
 func (h CloneCliHandler) CloneAll() error {
 
 	errContext := "clihandler::CloneAll"

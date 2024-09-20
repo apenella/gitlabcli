@@ -15,8 +15,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// PerPage number of items to return on each Gitlab API page
 const PerPage = 100
 
+// NewCommand creates a get group command
 func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 
 	listGroupCmd := &cobra.Command{
@@ -32,6 +34,7 @@ func NewCommand(conf *configuration.Configuration) *command.AppCommand {
 	return command.NewCommand(listGroupCmd)
 }
 
+// listGroups function is responsible to list group information from Gitlab
 func listGroups(conf *configuration.Configuration) error {
 
 	var service listservice.ListGroupService
@@ -42,7 +45,7 @@ func listGroups(conf *configuration.Configuration) error {
 
 	errContext := "listgroup::listGroups"
 
-	outputGroup = groupoutputrepo.NewGroupOutputRepository(os.Stdout)
+	outputGroup = groupoutputrepo.NewOutputRepository(os.Stdout)
 
 	gitlab, err = gitlabrepo.NewGitlabRepository(conf.Token, conf.BaseURL, PerPage)
 	if err != nil {

@@ -6,19 +6,29 @@ import (
 )
 
 var (
-	Version, Commit, BuildDate string
+	// Version is the version of the release
+	Version string
+	// Commit is the commit hash of the release
+	Commit string
+	// BuildDate is the date when the release was built
+	BuildDate string
 )
 
-// Release
+// Release contains information about the release
 type Release struct {
+	// BuildDate is the date when the release was built
 	BuildDate string
-	Commit    string
-	Header    string
-	OsArch    string
-	Version   string
+	// Commit is the commit hash of the release
+	Commit string
+	// Header is the header of the release
+	Header string
+	// OsArch is the OS and architecture of the release
+	OsArch string
+	// Version is the version of the release
+	Version string
 }
 
-// NewRelease
+// NewRelease creates a new Release instance
 func NewRelease(os, arch string) *Release {
 	return &Release{
 		BuildDate: strings.TrimSpace(BuildDate),

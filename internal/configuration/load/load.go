@@ -8,16 +8,19 @@ import (
 	"github.com/spf13/viper"
 )
 
+// ConfigurationLoader interface is an interface to load configuration
 type ConfigurationLoader interface {
 	ReadInConfig() error
 	SetConfigFile(file string)
 	SetFs(afero.Fs)
 }
 
+// ConfigurationUnmarshaler interface is an interface to unmarshal configuration
 type ConfigurationUnmarshaler interface {
 	Unmarshal(rawVal interface{}, opts ...viper.DecoderConfigOption) error
 }
 
+// Load function is responsible to load configuration from a file
 func Load(loader ConfigurationLoader, fs afero.Fs, configFile string) error {
 	var err error
 
@@ -37,6 +40,7 @@ func Load(loader ConfigurationLoader, fs afero.Fs, configFile string) error {
 	return nil
 }
 
+// Unmarshal function is responsible to unmarshal configuration
 func Unmarshal(unmarshaler ConfigurationUnmarshaler) (configuration.Configuration, error) {
 	var err error
 	var conf configuration.Configuration

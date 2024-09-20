@@ -9,14 +9,18 @@ import (
 	errors "github.com/apenella/go-common-utils/error"
 )
 
-type OptionsFunc func(*CloneService)
+// OptionsFunc to set options to Service
+type OptionsFunc func(*Service)
 
 const (
+	// SSHMode mode
 	SSHMode uint8 = iota
+	// HTTPMode mode
 	HTTPMode
 )
 
-type CloneService struct {
+// Service struct defines a service to clone projects
+type Service struct {
 	project          ports.GitlabProjectRepository
 	group            ports.GitlabGroupRepository
 	git              ports.GitRepository
@@ -27,32 +31,37 @@ type CloneService struct {
 	dir              string
 }
 
+// WithMode is an OptionsFunc to set mode to Service
 func WithMode(m uint8) OptionsFunc {
-	return func(s *CloneService) {
+	return func(s *Service) {
 		s.mode = m
 	}
 }
 
+// WithUseNamespacePath is an OptionsFunc to set useNamespacePath to Service
 func WithUseNamespacePath() OptionsFunc {
-	return func(s *CloneService) {
+	return func(s *Service) {
 		s.useNamespacePath = true
 	}
 }
 
+// WithBasePath is an OptionsFunc to set basePath to Service
 func WithBasePath(p string) OptionsFunc {
-	return func(s *CloneService) {
+	return func(s *Service) {
 		s.basePath = p
 	}
 }
 
+// WithDir is an OptionsFunc to set dir to Service
 func WithDir(d string) OptionsFunc {
-	return func(s *CloneService) {
+	return func(s *Service) {
 		s.dir = d
 	}
 }
 
-func NewCloneService(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, git ports.GitRepository, storage ports.StorageRepository, opts ...OptionsFunc) (CloneService, error) {
-	s := &CloneService{
+// NewService creates a new Service instance
+func NewService(project ports.GitlabProjectRepository, group ports.GitlabGroupRepository, git ports.GitRepository, storage ports.StorageRepository, opts ...OptionsFunc) (Service, error) {
+	s := &Service{
 		project: project,
 		group:   group,
 		git:     git,
@@ -66,7 +75,8 @@ func NewCloneService(project ports.GitlabProjectRepository, group ports.GitlabGr
 	return *s, nil
 }
 
-func (s CloneService) CloneProject(project string) error {
+// CloneProject clones a project
+func (s Service) CloneProject(project string) error {
 
 	errContext := "service::CloneProject"
 	errs := []error{}
@@ -90,7 +100,8 @@ func (s CloneService) CloneProject(project string) error {
 	return nil
 }
 
-func (s CloneService) CloneProjectsFromGroup(group string) error {
+// CloneProjectsFromGroup clones all projects from a GitLab group
+func (s Service) CloneProjectsFromGroup(group string) error {
 	errContext := "service::CloneProjectsFromGroup"
 	errs := []error{}
 
@@ -112,7 +123,9 @@ func (s CloneService) CloneProjectsFromGroup(group string) error {
 
 	return nil
 }
-func (s CloneService) CloneAll() error {
+
+// CloneAll clones all projects
+func (s Service) CloneAll() error {
 
 	errContext := "service::CloneProject"
 	errs := []error{}
@@ -136,7 +149,8 @@ func (s CloneService) CloneAll() error {
 	return errors.New(errContext, fmt.Sprintf("'%s' not implemented", errContext))
 }
 
-func (s CloneService) clone(p domain.Project) error {
+// clone clones a project
+func (s Service) clone(p domain.Project) error {
 
 	var err error
 	var existDir bool
@@ -167,7 +181,8 @@ func (s CloneService) clone(p domain.Project) error {
 	return nil
 }
 
-func (s CloneService) directory(project domain.Project) string {
+// directory returns the directory to clone a project
+func (s Service) directory(project domain.Project) string {
 
 	if s.dir != "" {
 		return s.dir
@@ -182,7 +197,8 @@ func (s CloneService) directory(project domain.Project) string {
 	return directory
 }
 
-func (s CloneService) url(project domain.Project) string {
+// url returns the url to clone a project
+func (s Service) url(project domain.Project) string {
 	var url string
 
 	switch s.mode {

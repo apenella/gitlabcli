@@ -8,11 +8,13 @@ import (
 	errors "github.com/apenella/go-common-utils/error"
 )
 
+// GetGroupCliHandler handles get group command
 type GetGroupCliHandler struct {
 	writer  ports.GitlabGroupOutputRepository
 	service ports.GetGroupService
 }
 
+// NewGetGroupCliHandler returns a new GetGroupCliHandler
 func NewGetGroupCliHandler(s ports.GetGroupService, w ports.GitlabGroupOutputRepository) (GetGroupCliHandler, error) {
 	return GetGroupCliHandler{
 		service: s,
@@ -20,6 +22,7 @@ func NewGetGroupCliHandler(s ports.GetGroupService, w ports.GitlabGroupOutputRep
 	}, nil
 }
 
+// GetGroup handles command to get a group
 func (h GetGroupCliHandler) GetGroup(groups ...string) error {
 
 	errContext := "clihandler::GetGroup"

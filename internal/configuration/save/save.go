@@ -6,11 +6,13 @@ import (
 	"github.com/spf13/afero"
 )
 
+// Configurer interface is an interface to configure a configuration
 type Configurer interface {
 	SetConfigFile(file string)
 	MergeConfigMap(cfg map[string]interface{}) error
 }
 
+// ConfigurationWriter interface is an interface to write a configuration
 type ConfigurationWriter interface {
 	Configurer
 	WriteConfig() error
@@ -19,16 +21,20 @@ type ConfigurationWriter interface {
 	SafeWriteConfigAs(file string) error
 }
 
+// ConfigurationMapper interface is an interface to map a configuration
 type ConfigurationMapper interface {
 	ToMap() map[string]interface{}
 }
 
+// ConfigurationSaver interface is an interface to save a configuration
 type ConfigurationSaver interface {
 	Save(w ConfigurationWriter, fs afero.Fs, config ConfigurationMapper, configFile string) error
 }
 
+// SafeSave struct is a struct to save a configuration safely, withouth overwriting the configuration file
 type SafeSave struct{}
 
+// Save method is responsible to save a configuration safely
 func (s *SafeSave) Save(w ConfigurationWriter, fs afero.Fs, config ConfigurationMapper, configFile string) error {
 
 	var err error
@@ -51,8 +57,10 @@ func (s *SafeSave) Save(w ConfigurationWriter, fs afero.Fs, config Configuration
 	return nil
 }
 
+// Save struct is a struct to save a configuration
 type Save struct{}
 
+// Save method is responsible to save a configuration
 func (s *Save) Save(w ConfigurationWriter, fs afero.Fs, config ConfigurationMapper, configFile string) error {
 
 	var err error
