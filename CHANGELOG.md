@@ -9,7 +9,7 @@
 ### Changed
 
 - Upgrade to Golang 1.23
-- Adapt souce code to make it complaiant to golint, gosec and staticcheck
+- Adapt souce code to make it complaiant to golint, staticcheck, errcheck and gosec
 
 ## [v0.3.1]
 

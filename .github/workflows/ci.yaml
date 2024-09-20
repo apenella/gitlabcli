@@ -19,18 +19,18 @@
             run: |
               make vet
 
-          - name: Execute gosec
-            run: |
-              make gosec
-
           - name: Execute linter
             run: |
-              make lint
+              make linter
 
           - name: Execute staticcheck
             run: |
               make staticcheck
 
-        #   - name: Execute errcheck
-        #     run: |
-        #       make errcheckk
+          - name: Execute errcheck
+            run: |
+              make errcheck
+
+          - name: Execute gosec
+            run: |
+              make gosec
