@@ -1,13 +1,5 @@
 # RELEASE NOTES
 
-## [v0.3.2]
+## [unreleased]
 
-### Added
-
-- Include the staticcheck tool
-
-### Changed
-
-- Adapt souce code to make it complaiant to golint, staticcheck, errcheck and gosec
-- Bump go-git to v5.12.0 that fixes the security vulnerabilities CVE-2023-49569
-- Upgrade to Golang 1.23
+- Bump golang.org/x/crypto from 0.27.0 to 0.31.0
